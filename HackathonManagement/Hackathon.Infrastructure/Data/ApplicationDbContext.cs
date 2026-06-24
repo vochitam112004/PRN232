@@ -152,7 +152,7 @@ public class ApplicationDbContext : IdentityDbContext<ApplicationUser, Applicati
             new()
             {
                 Id = organizerId,
-                FullName = "Organizer User",
+                FullName = "Ban Tổ Chức Hackathon",
                 Email = "organizer@hackathon.com",
                 NormalizedEmail = "ORGANIZER@HACKATHON.COM",
                 UserName = "organizer@hackathon.com",
@@ -167,7 +167,7 @@ public class ApplicationDbContext : IdentityDbContext<ApplicationUser, Applicati
             new()
             {
                 Id = judgeInternalId,
-                FullName = "Internal Judge",
+                FullName = "Giám Khảo Nội Bộ",
                 Email = "judge.internal@hackathon.com",
                 NormalizedEmail = "JUDGE.INTERNAL@HACKATHON.COM",
                 UserName = "judge.internal@hackathon.com",
@@ -182,7 +182,7 @@ public class ApplicationDbContext : IdentityDbContext<ApplicationUser, Applicati
             new()
             {
                 Id = judgeGuestId,
-                FullName = "Guest Judge",
+                FullName = "Giám Khảo Khách Mời",
                 Email = "judge.guest@hackathon.com",
                 NormalizedEmail = "JUDGE.GUEST@HACKATHON.COM",
                 UserName = "judge.guest@hackathon.com",
@@ -197,7 +197,7 @@ public class ApplicationDbContext : IdentityDbContext<ApplicationUser, Applicati
             new()
             {
                 Id = mentorId,
-                FullName = "Mentor User",
+                FullName = "Cố Vấn Chuyên Môn",
                 Email = "mentor@hackathon.com",
                 NormalizedEmail = "MENTOR@HACKATHON.COM",
                 UserName = "mentor@hackathon.com",
@@ -212,7 +212,7 @@ public class ApplicationDbContext : IdentityDbContext<ApplicationUser, Applicati
             new()
             {
                 Id = studentFptId,
-                FullName = "FPT Student",
+                FullName = "Sinh Viên FPT",
                 Email = "student.fpt@hackathon.com",
                 NormalizedEmail = "STUDENT.FPT@HACKATHON.COM",
                 UserName = "student.fpt@hackathon.com",
@@ -227,7 +227,7 @@ public class ApplicationDbContext : IdentityDbContext<ApplicationUser, Applicati
             new()
             {
                 Id = studentExternalId,
-                FullName = "External Student",
+                FullName = "Sinh Viên Ngoài Trường",
                 Email = "student.external@hackathon.com",
                 NormalizedEmail = "STUDENT.EXTERNAL@HACKATHON.COM",
                 UserName = "student.external@hackathon.com",
