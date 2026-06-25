@@ -48,8 +48,15 @@ public class EventsController : BaseApiController
         if (userId == Guid.Empty)
             return Unauthorized();
 
-        var ev = await _eventService.CreateEventAsync(userId, request);
-        return StatusCode(201, ev);
+        try
+        {
+            var ev = await _eventService.CreateEventAsync(userId, request);
+            return StatusCode(201, ev);
+        }
+        catch (System.ArgumentException ex)
+        {
+            return BadRequest(new { error = ex.Message });
+        }
     }
 
     /// <summary>Cập nhật, thêm hoặc xóa các tiêu chí của sự kiện (Chỉ dành cho Ban Tổ Chức).</summary>
