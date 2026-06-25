@@ -68,6 +68,8 @@ public static class DependencyInjection
         services.AddScoped<IRefreshTokenRepository, RefreshTokenRepository>();
         services.AddScoped<IStudentProfileRepository, StudentProfileRepository>();
         services.AddScoped<IAccountApprovalRepository, AccountApprovalRepository>();
+        services.AddScoped<ICriteriaTemplateRepository, CriteriaTemplateRepository>();
+        services.AddScoped<IEventRepository, EventRepository>();
 
         // ── Infrastructure-specific services ────────────────────────────────────
         // TokenService stays here because JWT generation is a framework concern
@@ -77,6 +79,8 @@ public static class DependencyInjection
         // Business logic lives in Application layer
         services.AddScoped<IAuthService, AuthService>();
         services.AddScoped<IAccountApprovalService, AccountApprovalService>();
+        services.AddScoped<ICriteriaTemplateService, CriteriaTemplateService>();
+        services.AddScoped<IEventService, EventService>();
 
         return services;
     }

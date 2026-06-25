@@ -3,14 +3,13 @@ using Hackathon.Application.Interfaces;
 using Hackathon.Domain.Constants;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using System.Security.Claims;
 
 namespace Hackathon.API.Controllers;
 
 [ApiController]
 [Route("api/accounts")]
 [Authorize(Roles = $"{Roles.Organizer}")]
-public class AccountApprovalController : ControllerBase
+public class AccountApprovalController : BaseApiController
 {
     private readonly IAccountApprovalService _approvalService;
 
@@ -79,12 +78,6 @@ public class AccountApprovalController : ControllerBase
         return Ok(new { message = "Đã khóa tài khoản người dùng thành công." });
     }
 
-    private Guid GetCurrentUserId()
-    {
-        var sub = User.FindFirstValue(ClaimTypes.NameIdentifier)
-               ?? User.FindFirstValue("sub");
-        return Guid.TryParse(sub, out var id) ? id : Guid.Empty;
-    }
 }
 
 public record SuspendRequest([System.ComponentModel.DataAnnotations.Required] string Reason);

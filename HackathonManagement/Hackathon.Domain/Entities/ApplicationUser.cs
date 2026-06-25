@@ -14,5 +14,7 @@ public class ApplicationUser : IdentityUser<Guid>
     public StudentProfile? StudentProfile { get; set; }
     public ICollection<AccountApproval> AccountApprovals { get; set; } = new List<AccountApproval>();
     public ICollection<RefreshToken> RefreshTokens { get; set; } = new List<RefreshToken>();
+    public ICollection<CriteriaTemplate> CreatedTemplates { get; set; } = new List<CriteriaTemplate>();
+    public ICollection<Event> CreatedEvents { get; set; } = new List<Event>();
 }
 

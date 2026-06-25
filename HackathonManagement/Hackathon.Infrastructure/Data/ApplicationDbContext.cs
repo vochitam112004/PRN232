@@ -11,10 +11,19 @@ public class ApplicationDbContext : IdentityDbContext<ApplicationUser, Applicati
 {
     public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options) : base(options) { }
 
-    // Auth-related tables only
+    // Auth-related tables
     public DbSet<RefreshToken> RefreshTokens => Set<RefreshToken>();
     public DbSet<StudentProfile> StudentProfiles => Set<StudentProfile>();
     public DbSet<AccountApproval> AccountApprovals => Set<AccountApproval>();
+
+    // Phase 2 Entities
+    public DbSet<CriteriaTemplate> CriteriaTemplates => Set<CriteriaTemplate>();
+    public DbSet<CriteriaTemplateItem> CriteriaTemplateItems => Set<CriteriaTemplateItem>();
+    public DbSet<Event> Events => Set<Event>();
+    public DbSet<EventCriteria> EventCriteria => Set<EventCriteria>();
+    public DbSet<Category> Categories => Set<Category>();
+    public DbSet<Round> Rounds => Set<Round>();
+    public DbSet<RoundPromotionRule> RoundPromotionRules => Set<RoundPromotionRule>();
 
     protected override void OnModelCreating(ModelBuilder builder)
     {
@@ -35,6 +44,15 @@ public class ApplicationDbContext : IdentityDbContext<ApplicationUser, Applicati
         ConfigureStudentProfile(builder);
         ConfigureAccountApproval(builder);
 
+        // Configure Phase 2 Entities
+        ConfigureCriteriaTemplate(builder);
+        ConfigureCriteriaTemplateItem(builder);
+        ConfigureEvent(builder);
+        ConfigureEventCriteria(builder);
+        ConfigureCategory(builder);
+        ConfigureRound(builder);
+        ConfigureRoundPromotionRule(builder);
+
         SeedRoles(builder);
         SeedUsers(builder);
     }
@@ -47,8 +65,8 @@ public class ApplicationDbContext : IdentityDbContext<ApplicationUser, Applicati
             e.Property(u => u.AvatarUrl).HasColumnType("nvarchar(max)");
             e.Property(u => u.Status)
                 .HasConversion(
-                    v => v.ToString().ToLower(),
-                    v => Enum.Parse<UserStatus>(v, true))
+                    v => ToSnakeCase(v),
+                    v => FromSnakeCase<UserStatus>(v))
                 .HasDefaultValue(UserStatus.PendingApproval);
             e.Property(u => u.CreatedAt).HasDefaultValueSql("GETUTCDATE()");
             e.Property(u => u.UpdatedAt).HasDefaultValueSql("GETUTCDATE()");
@@ -109,8 +127,8 @@ public class ApplicationDbContext : IdentityDbContext<ApplicationUser, Applicati
             e.HasKey(a => a.Id);
             e.Property(a => a.Status)
                 .HasConversion(
-                    v => v.ToString().ToLower(),
-                    v => Enum.Parse<UserStatus>(v, true));
+                    v => ToSnakeCase(v),
+                    v => FromSnakeCase<UserStatus>(v));
             e.Property(a => a.Note).HasColumnType("nvarchar(max)");
             e.Property(a => a.CreatedAt).HasDefaultValueSql("GETUTCDATE()");
 
@@ -276,5 +294,177 @@ public class ApplicationDbContext : IdentityDbContext<ApplicationUser, Applicati
             }
         };
         b.Entity<StudentProfile>().HasData(studentProfiles);
+    }
+
+    private static string ToSnakeCase<T>(T val) where T : struct, Enum
+    {
+        var str = val.ToString();
+        return string.Concat(str.Select((x, i) => i > 0 && char.IsUpper(x) ? "_" + x.ToString() : x.ToString())).ToLower();
+    }
+
+    private static T FromSnakeCase<T>(string value) where T : struct, Enum
+    {
+        var pascal = value.Replace("_", "");
+        return Enum.Parse<T>(pascal, true);
+    }
+
+    private static void ConfigureCriteriaTemplate(ModelBuilder b)
+    {
+        b.Entity<CriteriaTemplate>(e =>
+        {
+            e.ToTable("CriteriaTemplates");
+            e.HasKey(t => t.Id);
+            e.Property(t => t.Name).HasMaxLength(255).IsRequired();
+            e.Property(t => t.Description).HasColumnType("nvarchar(max)");
+            e.Property(t => t.IsDefault).HasDefaultValue(false);
+            e.Property(t => t.CreatedAt).HasDefaultValueSql("GETUTCDATE()");
+            e.Property(t => t.UpdatedAt).HasDefaultValueSql("GETUTCDATE()");
+
+            e.HasOne(t => t.Creator)
+                .WithMany(u => u.CreatedTemplates)
+                .HasForeignKey(t => t.CreatedBy)
+                .OnDelete(DeleteBehavior.Restrict);
+        });
+    }
+
+    private static void ConfigureCriteriaTemplateItem(ModelBuilder b)
+    {
+        b.Entity<CriteriaTemplateItem>(e =>
+        {
+            e.ToTable("CriteriaTemplateItems");
+            e.HasKey(i => i.Id);
+            e.Property(i => i.Name).HasMaxLength(255).IsRequired();
+            e.Property(i => i.Description).HasColumnType("nvarchar(max)");
+            e.Property(i => i.MaxScore).HasPrecision(5, 2).IsRequired();
+            e.Property(i => i.Weight).HasPrecision(5, 4).IsRequired();
+            e.Property(i => i.DisplayOrder).HasDefaultValue(0);
+            e.Property(i => i.CreatedAt).HasDefaultValueSql("GETUTCDATE()");
+
+            e.HasOne(i => i.Template)
+                .WithMany(t => t.Items)
+                .HasForeignKey(i => i.TemplateId)
+                .OnDelete(DeleteBehavior.Cascade);
+        });
+    }
+
+    private static void ConfigureEvent(ModelBuilder b)
+    {
+        b.Entity<Event>(e =>
+        {
+            e.ToTable("Events");
+            e.HasKey(ev => ev.Id);
+            e.Property(ev => ev.Title).HasMaxLength(255).IsRequired();
+            e.Property(ev => ev.Description).HasColumnType("nvarchar(max)");
+            e.Property(ev => ev.BannerUrl).HasColumnType("nvarchar(max)");
+            e.Property(ev => ev.Status)
+                .HasConversion(
+                    v => ToSnakeCase(v),
+                    v => FromSnakeCase<EventStatus>(v))
+                .HasDefaultValue(EventStatus.Draft);
+            e.Property(ev => ev.CreatedAt).HasDefaultValueSql("GETUTCDATE()");
+            e.Property(ev => ev.UpdatedAt).HasDefaultValueSql("GETUTCDATE()");
+
+            e.HasOne(ev => ev.Creator)
+                .WithMany(u => u.CreatedEvents)
+                .HasForeignKey(ev => ev.CreatedBy)
+                .OnDelete(DeleteBehavior.Restrict);
+
+            e.HasOne(ev => ev.CriteriaTemplate)
+                .WithMany()
+                .HasForeignKey(ev => ev.CriteriaTemplateId)
+                .OnDelete(DeleteBehavior.SetNull);
+        });
+    }
+
+    private static void ConfigureEventCriteria(ModelBuilder b)
+    {
+        b.Entity<EventCriteria>(e =>
+        {
+            e.ToTable("EventCriteria");
+            e.HasKey(c => c.Id);
+            e.Property(c => c.Name).HasMaxLength(255).IsRequired();
+            e.Property(c => c.Description).HasColumnType("nvarchar(max)");
+            e.Property(c => c.MaxScore).HasPrecision(5, 2).IsRequired();
+            e.Property(c => c.Weight).HasPrecision(5, 4).IsRequired();
+            e.Property(c => c.DisplayOrder).HasDefaultValue(0);
+            e.Property(c => c.IsActive).HasDefaultValue(true);
+            e.Property(c => c.CreatedAt).HasDefaultValueSql("GETUTCDATE()");
+            e.Property(c => c.UpdatedAt).HasDefaultValueSql("GETUTCDATE()");
+
+            e.HasOne(c => c.Event)
+                .WithMany(ev => ev.Criteria)
+                .HasForeignKey(c => c.EventId)
+                .OnDelete(DeleteBehavior.Cascade);
+
+            e.HasOne(c => c.SourceItem)
+                .WithMany()
+                .HasForeignKey(c => c.SourceItemId)
+                .OnDelete(DeleteBehavior.SetNull);
+        });
+    }
+
+    private static void ConfigureCategory(ModelBuilder b)
+    {
+        b.Entity<Category>(e =>
+        {
+            e.ToTable("Categories");
+            e.HasKey(c => c.Id);
+            e.Property(c => c.Name).HasMaxLength(255).IsRequired();
+            e.Property(c => c.Description).HasColumnType("nvarchar(max)");
+            e.Property(c => c.CreatedAt).HasDefaultValueSql("GETUTCDATE()");
+            e.Property(c => c.UpdatedAt).HasDefaultValueSql("GETUTCDATE()");
+
+            e.HasOne(c => c.Event)
+                .WithMany(ev => ev.Categories)
+                .HasForeignKey(c => c.EventId)
+                .OnDelete(DeleteBehavior.Cascade);
+        });
+    }
+
+    private static void ConfigureRound(ModelBuilder b)
+    {
+        b.Entity<Round>(e =>
+        {
+            e.ToTable("Rounds");
+            e.HasKey(r => r.Id);
+            e.Property(r => r.Name).HasMaxLength(255).IsRequired();
+            e.Property(r => r.Description).HasColumnType("nvarchar(max)");
+            e.Property(r => r.RoundOrder).IsRequired();
+            e.Property(r => r.Status)
+                .HasConversion(
+                    v => ToSnakeCase(v),
+                    v => FromSnakeCase<RoundStatus>(v))
+                .HasDefaultValue(RoundStatus.Upcoming);
+            e.Property(r => r.SubmissionDeadline).IsRequired();
+            e.Property(r => r.IsCalibrationRound).HasDefaultValue(false);
+            e.Property(r => r.CreatedAt).HasDefaultValueSql("GETUTCDATE()");
+            e.Property(r => r.UpdatedAt).HasDefaultValueSql("GETUTCDATE()");
+
+            e.HasOne(r => r.Event)
+                .WithMany(ev => ev.Rounds)
+                .HasForeignKey(r => r.EventId)
+                .OnDelete(DeleteBehavior.Cascade);
+        });
+    }
+
+    private static void ConfigureRoundPromotionRule(ModelBuilder b)
+    {
+        b.Entity<RoundPromotionRule>(e =>
+        {
+            e.ToTable("RoundPromotionRules");
+            e.HasKey(p => p.Id);
+            e.Property(p => p.RuleType)
+                .HasConversion(
+                    v => ToSnakeCase(v),
+                    v => FromSnakeCase<PromotionRuleType>(v));
+            e.Property(p => p.ScoreThreshold).HasPrecision(6, 2);
+            e.Property(p => p.PerCategory).HasDefaultValue(true);
+            e.Property(p => p.CreatedAt).HasDefaultValueSql("GETUTCDATE()");
+
+            e.HasOne(p => p.Round)
+                .WithMany(r => r.PromotionRules)
+                .HasForeignKey(p => p.RoundId)
+                .OnDelete(DeleteBehavior.Cascade);
+        });
     }
 }
