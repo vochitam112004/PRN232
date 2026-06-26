@@ -25,6 +25,13 @@ public class ApplicationDbContext : IdentityDbContext<ApplicationUser, Applicati
     public DbSet<Round> Rounds => Set<Round>();
     public DbSet<RoundPromotionRule> RoundPromotionRules => Set<RoundPromotionRule>();
 
+    // Phase 3 Entities
+    public DbSet<CategoryMentor> CategoryMentors => Set<CategoryMentor>();
+    public DbSet<Team> Teams => Set<Team>();
+    public DbSet<TeamMember> TeamMembers => Set<TeamMember>();
+    public DbSet<Submission> Submissions => Set<Submission>();
+
+
     protected override void OnModelCreating(ModelBuilder builder)
     {
         base.OnModelCreating(builder);
@@ -53,9 +60,16 @@ public class ApplicationDbContext : IdentityDbContext<ApplicationUser, Applicati
         ConfigureRound(builder);
         ConfigureRoundPromotionRule(builder);
 
+        // Configure Phase 3 Entities
+        ConfigureCategoryMentor(builder);
+        ConfigureTeam(builder);
+        ConfigureTeamMember(builder);
+        ConfigureSubmission(builder);
+
         SeedRoles(builder);
         SeedUsers(builder);
     }
+
 
     private static void ConfigureUser(ModelBuilder b)
     {
@@ -467,4 +481,101 @@ public class ApplicationDbContext : IdentityDbContext<ApplicationUser, Applicati
                 .OnDelete(DeleteBehavior.Cascade);
         });
     }
+
+    private static void ConfigureCategoryMentor(ModelBuilder b)
+    {
+        b.Entity<CategoryMentor>(e =>
+        {
+            e.ToTable("CategoryMentors");
+            e.HasKey(cm => new { cm.CategoryId, cm.MentorId });
+            e.Property(cm => cm.AssignedAt).HasDefaultValueSql("GETUTCDATE()");
+
+            e.HasOne(cm => cm.Category)
+                .WithMany(c => c.CategoryMentors)
+                .HasForeignKey(cm => cm.CategoryId)
+                .OnDelete(DeleteBehavior.Cascade);
+
+            e.HasOne(cm => cm.Mentor)
+                .WithMany(u => u.CategoryMentorships)
+                .HasForeignKey(cm => cm.MentorId)
+                .OnDelete(DeleteBehavior.Cascade);
+        });
+    }
+
+    private static void ConfigureTeam(ModelBuilder b)
+    {
+        b.Entity<Team>(e =>
+        {
+            e.ToTable("Teams");
+            e.HasKey(t => t.Id);
+            e.Property(t => t.Name).HasMaxLength(255).IsRequired();
+            e.Property(t => t.Description).HasColumnType("nvarchar(max)");
+            e.Property(t => t.InviteCode).HasMaxLength(50).IsRequired();
+            e.HasIndex(t => t.InviteCode).IsUnique();
+            e.Property(t => t.CreatedAt).HasDefaultValueSql("GETUTCDATE()");
+            e.Property(t => t.UpdatedAt).HasDefaultValueSql("GETUTCDATE()");
+
+            e.HasOne(t => t.Category)
+                .WithMany(c => c.Teams)
+                .HasForeignKey(t => t.CategoryId)
+                .OnDelete(DeleteBehavior.Restrict);
+
+            e.HasOne(t => t.Leader)
+                .WithMany(u => u.LedTeams)
+                .HasForeignKey(t => t.LeaderId)
+                .OnDelete(DeleteBehavior.Restrict);
+        });
+    }
+
+    private static void ConfigureTeamMember(ModelBuilder b)
+    {
+        b.Entity<TeamMember>(e =>
+        {
+            e.ToTable("TeamMembers");
+            e.HasKey(tm => new { tm.TeamId, tm.UserId });
+            e.Property(tm => tm.JoinedAt).HasDefaultValueSql("GETUTCDATE()");
+
+            e.HasOne(tm => tm.Team)
+                .WithMany(t => t.Members)
+                .HasForeignKey(tm => tm.TeamId)
+                .OnDelete(DeleteBehavior.Cascade);
+
+            e.HasOne(tm => tm.User)
+                .WithMany(u => u.TeamMemberships)
+                .HasForeignKey(tm => tm.UserId)
+                .OnDelete(DeleteBehavior.Cascade);
+        });
+    }
+
+    private static void ConfigureSubmission(ModelBuilder b)
+    {
+        b.Entity<Submission>(e =>
+        {
+            e.ToTable("Submissions");
+            e.HasKey(s => s.Id);
+            e.Property(s => s.RepoUrl).HasMaxLength(1000).IsRequired();
+            e.Property(s => s.DemoUrl).HasMaxLength(1000);
+            e.Property(s => s.VideoUrl).HasMaxLength(1000);
+            e.Property(s => s.Description).HasColumnType("nvarchar(max)");
+
+            e.Property(s => s.RepoDescription).HasColumnType("nvarchar(max)");
+            e.Property(s => s.RepoLastCommitMessage).HasColumnType("nvarchar(max)");
+            e.Property(s => s.RepoPrimaryLanguage).HasMaxLength(100);
+
+            e.Property(s => s.SubmittedAt).HasDefaultValueSql("GETUTCDATE()");
+            e.Property(s => s.CreatedAt).HasDefaultValueSql("GETUTCDATE()");
+            e.Property(s => s.UpdatedAt).HasDefaultValueSql("GETUTCDATE()");
+
+            e.HasOne(s => s.Team)
+                .WithMany(t => t.Submissions)
+                .HasForeignKey(s => s.TeamId)
+                .OnDelete(DeleteBehavior.Cascade);
+
+            e.HasOne(s => s.Round)
+                .WithMany(r => r.Submissions)
+                .HasForeignKey(s => s.RoundId)
+                .OnDelete(DeleteBehavior.Cascade);
+        });
+    }
 }
+

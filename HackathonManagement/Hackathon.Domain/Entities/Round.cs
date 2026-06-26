@@ -21,4 +21,5 @@ public class Round
     // Navigation properties
     public Event Event { get; set; } = null!;
     public ICollection<RoundPromotionRule> PromotionRules { get; set; } = new List<RoundPromotionRule>();
+    public ICollection<Submission> Submissions { get; set; } = new List<Submission>();
 }

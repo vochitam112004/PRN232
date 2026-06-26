@@ -16,5 +16,10 @@ public class ApplicationUser : IdentityUser<Guid>
     public ICollection<RefreshToken> RefreshTokens { get; set; } = new List<RefreshToken>();
     public ICollection<CriteriaTemplate> CreatedTemplates { get; set; } = new List<CriteriaTemplate>();
     public ICollection<Event> CreatedEvents { get; set; } = new List<Event>();
+
+    // Phase 3 properties
+    public ICollection<Team> LedTeams { get; set; } = new List<Team>();
+    public ICollection<TeamMember> TeamMemberships { get; set; } = new List<TeamMember>();
+    public ICollection<CategoryMentor> CategoryMentorships { get; set; } = new List<CategoryMentor>();
 }
 

@@ -12,4 +12,6 @@ public class Category
 
     // Navigation properties
     public Event Event { get; set; } = null!;
+    public ICollection<CategoryMentor> CategoryMentors { get; set; } = new List<CategoryMentor>();
+    public ICollection<Team> Teams { get; set; } = new List<Team>();
 }
