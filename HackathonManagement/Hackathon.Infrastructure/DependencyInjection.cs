@@ -72,6 +72,11 @@ public static class DependencyInjection
         services.AddScoped<IEventRepository, EventRepository>();
         services.AddScoped<ITeamRepository, TeamRepository>();
         services.AddScoped<ISubmissionRepository, SubmissionRepository>();
+        
+        // Phase 4 Repositories
+        services.AddScoped<IJudgeAssignmentRepository, JudgeAssignmentRepository>();
+        services.AddScoped<IJudgeScoreRepository, JudgeScoreRepository>();
+        services.AddScoped<IRoundResultRepository, RoundResultRepository>();
 
         // ── Infrastructure-specific services ────────────────────────────────────
         // TokenService stays here because JWT generation is a framework concern
@@ -87,6 +92,10 @@ public static class DependencyInjection
         services.AddScoped<ITeamService, TeamService>();
         services.AddScoped<ISubmissionService, SubmissionService>();
 
+        // Phase 4 Services
+        services.AddScoped<IJudgeAssignmentService, JudgeAssignmentService>();
+        services.AddScoped<IScoringService, ScoringService>();
+        services.AddScoped<IRankingService, RankingService>();
 
         return services;
     }

@@ -17,4 +17,7 @@ public class EventCriteria
     // Navigation properties
     public Event Event { get; set; } = null!;
     public CriteriaTemplateItem? SourceItem { get; set; }
+
+    // Phase 4 properties
+    public ICollection<JudgeScore> JudgeScores { get; set; } = new List<JudgeScore>();
 }

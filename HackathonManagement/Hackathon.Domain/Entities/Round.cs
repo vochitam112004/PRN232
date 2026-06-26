@@ -22,4 +22,8 @@ public class Round
     public Event Event { get; set; } = null!;
     public ICollection<RoundPromotionRule> PromotionRules { get; set; } = new List<RoundPromotionRule>();
     public ICollection<Submission> Submissions { get; set; } = new List<Submission>();
+    
+    // Phase 4 properties
+    public ICollection<JudgeAssignment> JudgeAssignments { get; set; } = new List<JudgeAssignment>();
+    public ICollection<RoundResult> RoundResults { get; set; } = new List<RoundResult>();
 }

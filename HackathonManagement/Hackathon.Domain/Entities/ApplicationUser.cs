@@ -21,5 +21,9 @@ public class ApplicationUser : IdentityUser<Guid>
     public ICollection<Team> LedTeams { get; set; } = new List<Team>();
     public ICollection<TeamMember> TeamMemberships { get; set; } = new List<TeamMember>();
     public ICollection<CategoryMentor> CategoryMentorships { get; set; } = new List<CategoryMentor>();
+
+    // Phase 4 properties
+    public ICollection<JudgeAssignment> JudgeAssignments { get; set; } = new List<JudgeAssignment>();
+    public ICollection<JudgeScore> JudgeScores { get; set; } = new List<JudgeScore>();
 }
 
