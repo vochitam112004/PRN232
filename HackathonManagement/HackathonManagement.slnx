@@ -1,1 +1,6 @@
-<Solution />
+<Solution>
+  <Project Path="Hackathon.API/Hackathon.API.csproj" />
+  <Project Path="Hackathon.Application/Hackathon.Application.csproj" />
+  <Project Path="Hackathon.Domain/Hackathon.Domain.csproj" />
+  <Project Path="Hackathon.Infrastructure/Hackathon.Infrastructure.csproj" />
+</Solution>
