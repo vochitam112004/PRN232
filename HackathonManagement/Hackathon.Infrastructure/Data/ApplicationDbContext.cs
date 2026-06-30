@@ -31,6 +31,10 @@ public class ApplicationDbContext : IdentityDbContext<ApplicationUser, Applicati
     public DbSet<TeamMember> TeamMembers => Set<TeamMember>();
     public DbSet<Submission> Submissions => Set<Submission>();
 
+    // Phase 4 Entities
+    public DbSet<JudgeAssignment> JudgeAssignments => Set<JudgeAssignment>();
+    public DbSet<JudgeScore> JudgeScores => Set<JudgeScore>();
+    public DbSet<RoundResult> RoundResults => Set<RoundResult>();
 
     protected override void OnModelCreating(ModelBuilder builder)
     {
@@ -65,6 +69,11 @@ public class ApplicationDbContext : IdentityDbContext<ApplicationUser, Applicati
         ConfigureTeam(builder);
         ConfigureTeamMember(builder);
         ConfigureSubmission(builder);
+
+        // Configure Phase 4 Entities
+        ConfigureJudgeAssignment(builder);
+        ConfigureJudgeScore(builder);
+        ConfigureRoundResult(builder);
 
         SeedRoles(builder);
         SeedUsers(builder);
@@ -577,5 +586,82 @@ public class ApplicationDbContext : IdentityDbContext<ApplicationUser, Applicati
                 .OnDelete(DeleteBehavior.Cascade);
         });
     }
-}
 
+    private static void ConfigureJudgeAssignment(ModelBuilder b)
+    {
+        b.Entity<JudgeAssignment>(e =>
+        {
+            e.ToTable("JudgeAssignments");
+            e.HasKey(ja => new { ja.RoundId, ja.JudgeId });
+            e.Property(ja => ja.AssignedAt).HasDefaultValueSql("GETUTCDATE()");
+
+            e.HasOne(ja => ja.Round)
+                .WithMany(r => r.JudgeAssignments)
+                .HasForeignKey(ja => ja.RoundId)
+                .OnDelete(DeleteBehavior.Cascade);
+
+            e.HasOne(ja => ja.Judge)
+                .WithMany(u => u.JudgeAssignments)
+                .HasForeignKey(ja => ja.JudgeId)
+                .OnDelete(DeleteBehavior.Cascade);
+        });
+    }
+
+    private static void ConfigureJudgeScore(ModelBuilder b)
+    {
+        b.Entity<JudgeScore>(e =>
+        {
+            e.ToTable("JudgeScores");
+            e.HasKey(s => s.Id);
+            e.Property(s => s.Score).HasPrecision(5, 2).IsRequired();
+            e.Property(s => s.Comment).HasColumnType("nvarchar(max)");
+            e.Property(s => s.ScoredAt).HasDefaultValueSql("GETUTCDATE()");
+            e.Property(s => s.UpdatedAt).HasDefaultValueSql("GETUTCDATE()");
+
+            // A judge can score a submission's criteria only once
+            e.HasIndex(s => new { s.SubmissionId, s.JudgeId, s.EventCriteriaId }).IsUnique();
+
+            e.HasOne(s => s.Submission)
+                .WithMany(sub => sub.JudgeScores)
+                .HasForeignKey(s => s.SubmissionId)
+                .OnDelete(DeleteBehavior.Cascade);
+
+            e.HasOne(s => s.Judge)
+                .WithMany(u => u.JudgeScores)
+                .HasForeignKey(s => s.JudgeId)
+                .OnDelete(DeleteBehavior.Restrict);
+
+            e.HasOne(s => s.EventCriteria)
+                .WithMany(c => c.JudgeScores)
+                .HasForeignKey(s => s.EventCriteriaId)
+                .OnDelete(DeleteBehavior.Restrict);
+        });
+    }
+
+    private static void ConfigureRoundResult(ModelBuilder b)
+    {
+        b.Entity<RoundResult>(e =>
+        {
+            e.ToTable("RoundResults");
+            e.HasKey(r => r.Id);
+            e.Property(r => r.TotalScore).HasPrecision(8, 2).IsRequired();
+            e.Property(r => r.Rank).IsRequired();
+            e.Property(r => r.IsAdvanced).HasDefaultValue(false);
+            e.Property(r => r.Note).HasColumnType("nvarchar(max)");
+            e.Property(r => r.CalculatedAt).HasDefaultValueSql("GETUTCDATE()");
+
+            // A submission has exactly one result per round
+            e.HasIndex(r => new { r.RoundId, r.SubmissionId }).IsUnique();
+
+            e.HasOne(r => r.Round)
+                .WithMany(rnd => rnd.RoundResults)
+                .HasForeignKey(r => r.RoundId)
+                .OnDelete(DeleteBehavior.Cascade);
+
+            e.HasOne(r => r.Submission)
+                .WithMany(sub => sub.RoundResults)
+                .HasForeignKey(r => r.SubmissionId)
+                .OnDelete(DeleteBehavior.Restrict);
+        });
+    }
+}

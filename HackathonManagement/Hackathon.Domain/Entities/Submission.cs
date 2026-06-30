@@ -28,4 +28,8 @@ public class Submission
     public DateTime SubmittedAt { get; set; } = DateTime.UtcNow;
     public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
     public DateTime UpdatedAt { get; set; } = DateTime.UtcNow;
+
+    // Phase 4 properties
+    public ICollection<JudgeScore> JudgeScores { get; set; } = new List<JudgeScore>();
+    public ICollection<RoundResult> RoundResults { get; set; } = new List<RoundResult>();
 }
