@@ -8,7 +8,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace Hackathon.Infrastructure.Migrations
 {
     /// <inheritdoc />
-    public partial class AddCompetitionEntities : Migration
+    public partial class tam : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -402,6 +402,61 @@ namespace Hackathon.Infrastructure.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "CategoryMentors",
+                columns: table => new
+                {
+                    CategoryId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    MentorId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    AssignedAt = table.Column<DateTime>(type: "datetime2", nullable: false, defaultValueSql: "GETUTCDATE()")
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_CategoryMentors", x => new { x.CategoryId, x.MentorId });
+                    table.ForeignKey(
+                        name: "FK_CategoryMentors_Categories_CategoryId",
+                        column: x => x.CategoryId,
+                        principalTable: "Categories",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_CategoryMentors_Users_MentorId",
+                        column: x => x.MentorId,
+                        principalTable: "Users",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Teams",
+                columns: table => new
+                {
+                    Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    Name = table.Column<string>(type: "nvarchar(255)", maxLength: 255, nullable: false),
+                    Description = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    InviteCode = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false),
+                    CategoryId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    LeaderId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    CreatedAt = table.Column<DateTime>(type: "datetime2", nullable: false, defaultValueSql: "GETUTCDATE()"),
+                    UpdatedAt = table.Column<DateTime>(type: "datetime2", nullable: false, defaultValueSql: "GETUTCDATE()")
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Teams", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_Teams_Categories_CategoryId",
+                        column: x => x.CategoryId,
+                        principalTable: "Categories",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                    table.ForeignKey(
+                        name: "FK_Teams_Users_LeaderId",
+                        column: x => x.LeaderId,
+                        principalTable: "Users",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "RoundPromotionRules",
                 columns: table => new
                 {
@@ -424,6 +479,68 @@ namespace Hackathon.Infrastructure.Migrations
                         onDelete: ReferentialAction.Cascade);
                 });
 
+            migrationBuilder.CreateTable(
+                name: "Submissions",
+                columns: table => new
+                {
+                    Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    TeamId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    RoundId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    RepoUrl = table.Column<string>(type: "nvarchar(1000)", maxLength: 1000, nullable: false),
+                    DemoUrl = table.Column<string>(type: "nvarchar(1000)", maxLength: 1000, nullable: true),
+                    VideoUrl = table.Column<string>(type: "nvarchar(1000)", maxLength: 1000, nullable: true),
+                    Description = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    RepoDescription = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    RepoStars = table.Column<int>(type: "int", nullable: true),
+                    RepoLastCommitMessage = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    RepoLastCommitDate = table.Column<DateTime>(type: "datetime2", nullable: true),
+                    RepoPrimaryLanguage = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: true),
+                    SubmittedAt = table.Column<DateTime>(type: "datetime2", nullable: false, defaultValueSql: "GETUTCDATE()"),
+                    CreatedAt = table.Column<DateTime>(type: "datetime2", nullable: false, defaultValueSql: "GETUTCDATE()"),
+                    UpdatedAt = table.Column<DateTime>(type: "datetime2", nullable: false, defaultValueSql: "GETUTCDATE()")
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Submissions", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_Submissions_Rounds_RoundId",
+                        column: x => x.RoundId,
+                        principalTable: "Rounds",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_Submissions_Teams_TeamId",
+                        column: x => x.TeamId,
+                        principalTable: "Teams",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "TeamMembers",
+                columns: table => new
+                {
+                    TeamId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    UserId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    JoinedAt = table.Column<DateTime>(type: "datetime2", nullable: false, defaultValueSql: "GETUTCDATE()")
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_TeamMembers", x => new { x.TeamId, x.UserId });
+                    table.ForeignKey(
+                        name: "FK_TeamMembers_Teams_TeamId",
+                        column: x => x.TeamId,
+                        principalTable: "Teams",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_TeamMembers_Users_UserId",
+                        column: x => x.UserId,
+                        principalTable: "Users",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
             migrationBuilder.InsertData(
                 table: "Roles",
                 columns: new[] { "Id", "ConcurrencyStamp", "CreatedAt", "Name", "NormalizedName" },
@@ -442,12 +559,12 @@ namespace Hackathon.Infrastructure.Migrations
                 columns: new[] { "Id", "AccessFailedCount", "AvatarUrl", "ConcurrencyStamp", "CreatedAt", "Email", "EmailConfirmed", "FullName", "LockoutEnabled", "LockoutEnd", "NormalizedEmail", "NormalizedUserName", "PasswordHash", "PhoneNumber", "PhoneNumberConfirmed", "SecurityStamp", "Status", "TwoFactorEnabled", "UpdatedAt", "UserName" },
                 values: new object[,]
                 {
-                    { new Guid("11111111-1111-1111-1111-111111111111"), 0, null, "e333c594-e69b-4a52-adc9-61d7f38863bc", new DateTime(2025, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc), "organizer@hackathon.com", true, "Ban Tổ Chức Hackathon", false, null, "ORGANIZER@HACKATHON.COM", "ORGANIZER@HACKATHON.COM", "AQAAAAIAAYagAAAAECmt7fHWHw6VYxbVNC1snifYlIfb0lUKEbc1zm7q9SyHwxxQuVehbLhri4vaBuzuUQ==", null, false, "02fca1f6-2854-41be-a697-492a35f2c600", "approved", false, new DateTime(2025, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc), "organizer@hackathon.com" },
-                    { new Guid("22222222-2222-2222-2222-222222222222"), 0, null, "b17c58cb-e0a1-42b4-aa31-eb88b8d5eeac", new DateTime(2025, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc), "judge.internal@hackathon.com", true, "Giám Khảo Nội Bộ", false, null, "JUDGE.INTERNAL@HACKATHON.COM", "JUDGE.INTERNAL@HACKATHON.COM", "AQAAAAIAAYagAAAAEJ7hIbn1keAY7d7zZI+MCNQF+b4cGtpWR7lUFTnpc4K07V1ssw2THc6PxShHaeyu2w==", null, false, "74e82b29-e17c-4666-95df-628506d75597", "approved", false, new DateTime(2025, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc), "judge.internal@hackathon.com" },
-                    { new Guid("33333333-3333-3333-3333-333333333333"), 0, null, "3de58733-ed5f-4e77-a5c1-bfe35ae53ea2", new DateTime(2025, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc), "judge.guest@hackathon.com", true, "Giám Khảo Khách Mời", false, null, "JUDGE.GUEST@HACKATHON.COM", "JUDGE.GUEST@HACKATHON.COM", "AQAAAAIAAYagAAAAEBO7OM0mLsqYjORewmmJtoGhDIOFMzR9MavDZsj1SZh1ZvTMr1+hYfmNi38S87lzSA==", null, false, "735638e5-c5ac-420d-8ac9-02d35082ef02", "approved", false, new DateTime(2025, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc), "judge.guest@hackathon.com" },
-                    { new Guid("44444444-4444-4444-4444-444444444444"), 0, null, "2c2336aa-0813-4ee9-93f6-1e7055ddf71c", new DateTime(2025, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc), "mentor@hackathon.com", true, "Cố Vấn Chuyên Môn", false, null, "MENTOR@HACKATHON.COM", "MENTOR@HACKATHON.COM", "AQAAAAIAAYagAAAAEHh58oEMuzdmoJPlNVBn8sPeuYRXzXM2pydLENtpzLaIM0N/kc9pvN/kBPYKkkdtZg==", null, false, "498a87b4-609b-458e-a002-5d6508591cbf", "approved", false, new DateTime(2025, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc), "mentor@hackathon.com" },
-                    { new Guid("55555555-5555-5555-5555-555555555555"), 0, null, "ff1ee6c6-0ec4-4de4-84cc-3bc580572241", new DateTime(2025, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc), "student.fpt@hackathon.com", true, "Sinh Viên FPT", false, null, "STUDENT.FPT@HACKATHON.COM", "STUDENT.FPT@HACKATHON.COM", "AQAAAAIAAYagAAAAEGzsHW3aVsf0ENREl5/CvmAzlvLXMj3sYVpKsdGB4opfRn4+uZkV3wD4LVwSUNVqcA==", null, false, "3ed80d05-4d06-41fe-abe8-805d2284d8c6", "approved", false, new DateTime(2025, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc), "student.fpt@hackathon.com" },
-                    { new Guid("66666666-6666-6666-6666-666666666666"), 0, null, "a4ae44bd-c498-4162-9a9f-ac91beb3c45a", new DateTime(2025, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc), "student.external@hackathon.com", true, "Sinh Viên Ngoài Trường", false, null, "STUDENT.EXTERNAL@HACKATHON.COM", "STUDENT.EXTERNAL@HACKATHON.COM", "AQAAAAIAAYagAAAAENJau20XtHlIAj0vXFqakemFJCwQcNfFf1IwUe9jMbiBBPbyR2kmXTtwIlDPPA+OYw==", null, false, "baa03523-9222-4037-bc26-714530acf75d", "approved", false, new DateTime(2025, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc), "student.external@hackathon.com" }
+                    { new Guid("11111111-1111-1111-1111-111111111111"), 0, null, "075e82e4-3926-45a6-b4f9-e1ec0fd2da3b", new DateTime(2025, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc), "organizer@hackathon.com", true, "Ban Tổ Chức Hackathon", false, null, "ORGANIZER@HACKATHON.COM", "ORGANIZER@HACKATHON.COM", "AQAAAAIAAYagAAAAEDG08Rzu9avb3GNT8cD/hckOaeSoJ3WueeXVasnUV4NiuKPyz0AMqezanEn9FPVJ5g==", null, false, "49d34940-987e-452d-b8ff-65777000d83e", "approved", false, new DateTime(2025, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc), "organizer@hackathon.com" },
+                    { new Guid("22222222-2222-2222-2222-222222222222"), 0, null, "69e71b18-1ade-4511-9e0e-82b38f15e892", new DateTime(2025, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc), "judge.internal@hackathon.com", true, "Giám Khảo Nội Bộ", false, null, "JUDGE.INTERNAL@HACKATHON.COM", "JUDGE.INTERNAL@HACKATHON.COM", "AQAAAAIAAYagAAAAEGXNLQKXRhiZbY0QhpJwcACfAhrK/WHhLLezngPL02YzMcUvHP3vKZzfW9lT/VajkQ==", null, false, "5ec9e56c-e13f-4a26-bd23-46cc73c54e1f", "approved", false, new DateTime(2025, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc), "judge.internal@hackathon.com" },
+                    { new Guid("33333333-3333-3333-3333-333333333333"), 0, null, "14139553-a224-4fdb-b6ff-38392f1ddd10", new DateTime(2025, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc), "judge.guest@hackathon.com", true, "Giám Khảo Khách Mời", false, null, "JUDGE.GUEST@HACKATHON.COM", "JUDGE.GUEST@HACKATHON.COM", "AQAAAAIAAYagAAAAEIYTV6h/FnCiKelIGkmdB/Sja58CbJ7HWJy7DXzYA7WQ8x32rkF0CJnVKa4oPajKzw==", null, false, "3dc8de55-2887-40e4-8520-8cd4278065d3", "approved", false, new DateTime(2025, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc), "judge.guest@hackathon.com" },
+                    { new Guid("44444444-4444-4444-4444-444444444444"), 0, null, "8289b785-71ae-4029-8dcc-cb0dda84daa7", new DateTime(2025, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc), "mentor@hackathon.com", true, "Cố Vấn Chuyên Môn", false, null, "MENTOR@HACKATHON.COM", "MENTOR@HACKATHON.COM", "AQAAAAIAAYagAAAAEFqANsTM/CY+A2feCXvA6r1fBXT1I7KZXqH3u36rGkFS8NuzeLHB0Cnz+mIlqxZl3A==", null, false, "4bbd7399-4f62-441b-b58b-73815885b1f4", "approved", false, new DateTime(2025, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc), "mentor@hackathon.com" },
+                    { new Guid("55555555-5555-5555-5555-555555555555"), 0, null, "86f21e28-cb54-43bd-a566-112638c4a133", new DateTime(2025, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc), "student.fpt@hackathon.com", true, "Sinh Viên FPT", false, null, "STUDENT.FPT@HACKATHON.COM", "STUDENT.FPT@HACKATHON.COM", "AQAAAAIAAYagAAAAEH1gyaoZ4oPYJK9PTlD6n3eYEUSA1+0lImAJMdYSdaYoG75nuvDyA8OhIkEJkbeuyA==", null, false, "0017c57c-0465-49d6-8718-a25c85590a35", "approved", false, new DateTime(2025, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc), "student.fpt@hackathon.com" },
+                    { new Guid("66666666-6666-6666-6666-666666666666"), 0, null, "c34532d7-1d6d-4363-a6cf-e8b0c96269d5", new DateTime(2025, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc), "student.external@hackathon.com", true, "Sinh Viên Ngoài Trường", false, null, "STUDENT.EXTERNAL@HACKATHON.COM", "STUDENT.EXTERNAL@HACKATHON.COM", "AQAAAAIAAYagAAAAEC8PIyPLkUG3nvHGpz+GbnsQE0YD3YrVJ7T16x7Bn86dN+QjQHzPpfm+RVWPg89Syw==", null, false, "46fba703-058c-4e77-a02a-ce8a654f1fde", "approved", false, new DateTime(2025, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc), "student.external@hackathon.com" }
                 });
 
             migrationBuilder.InsertData(
@@ -487,6 +604,11 @@ namespace Hackathon.Infrastructure.Migrations
                 name: "IX_Categories_EventId",
                 table: "Categories",
                 column: "EventId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_CategoryMentors_MentorId",
+                table: "CategoryMentors",
+                column: "MentorId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_CriteriaTemplateItems_TemplateId",
@@ -558,6 +680,37 @@ namespace Hackathon.Infrastructure.Migrations
                 unique: true);
 
             migrationBuilder.CreateIndex(
+                name: "IX_Submissions_RoundId",
+                table: "Submissions",
+                column: "RoundId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Submissions_TeamId",
+                table: "Submissions",
+                column: "TeamId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_TeamMembers_UserId",
+                table: "TeamMembers",
+                column: "UserId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Teams_CategoryId",
+                table: "Teams",
+                column: "CategoryId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Teams_InviteCode",
+                table: "Teams",
+                column: "InviteCode",
+                unique: true);
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Teams_LeaderId",
+                table: "Teams",
+                column: "LeaderId");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_UserClaims_UserId",
                 table: "UserClaims",
                 column: "UserId");
@@ -592,7 +745,7 @@ namespace Hackathon.Infrastructure.Migrations
                 name: "AccountApprovals");
 
             migrationBuilder.DropTable(
-                name: "Categories");
+                name: "CategoryMentors");
 
             migrationBuilder.DropTable(
                 name: "EventCriteria");
@@ -608,6 +761,12 @@ namespace Hackathon.Infrastructure.Migrations
 
             migrationBuilder.DropTable(
                 name: "StudentProfiles");
+
+            migrationBuilder.DropTable(
+                name: "Submissions");
+
+            migrationBuilder.DropTable(
+                name: "TeamMembers");
 
             migrationBuilder.DropTable(
                 name: "UserClaims");
@@ -628,7 +787,13 @@ namespace Hackathon.Infrastructure.Migrations
                 name: "Rounds");
 
             migrationBuilder.DropTable(
+                name: "Teams");
+
+            migrationBuilder.DropTable(
                 name: "Roles");
+
+            migrationBuilder.DropTable(
+                name: "Categories");
 
             migrationBuilder.DropTable(
                 name: "Events");
