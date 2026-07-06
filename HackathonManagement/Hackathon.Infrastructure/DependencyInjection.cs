@@ -10,6 +10,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.IdentityModel.Tokens;
+using SEAL.Infrastructure.Services;
 using System.Text;
 
 namespace Hackathon.Infrastructure;
@@ -72,7 +73,10 @@ public static class DependencyInjection
         services.AddScoped<IEventRepository, EventRepository>();
         services.AddScoped<ITeamRepository, TeamRepository>();
         services.AddScoped<ISubmissionRepository, SubmissionRepository>();
-        
+        services.AddScoped<IAwardRepository, AwardRepository>();
+        services.AddScoped<INotificationRepository, NotificationRepository>();
+
+
         // Phase 4 Repositories
         services.AddScoped<IJudgeAssignmentRepository, JudgeAssignmentRepository>();
         services.AddScoped<IJudgeScoreRepository, JudgeScoreRepository>();
@@ -97,6 +101,13 @@ public static class DependencyInjection
         services.AddScoped<IScoringService, ScoringService>();
         services.AddScoped<IRankingService, RankingService>();
 
+        //Phase 5 Services
+        services.AddScoped<IAuditLoggerRepository, AuditLogRepository>();
+        services.AddScoped<IDisqualificationService, DisqualificationService>();
+        services.AddScoped<IAuditLoggerService, AuditLoggerService>();
+        services.AddScoped<IExportService, ExportService>();
+        services.AddScoped<IAwardService, AwardService>();
+        services.AddScoped<INotificationService, NotificationService>();
         return services;
     }
 }

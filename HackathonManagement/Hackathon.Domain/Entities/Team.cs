@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 
 namespace Hackathon.Domain.Entities;
@@ -18,6 +18,12 @@ public class Team
 
     public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
     public DateTime UpdatedAt { get; set; } = DateTime.UtcNow;
+    // Phase 5 - Disqualification
+    public bool IsDisqualified { get; set; } = false;
+    public DateTime? DisqualifiedAt { get; set; }
+    public Guid? DisqualifiedBy { get; set; }      // ApplicationUser thực hiện (BTC)
+    public string? DisqualifyReason { get; set; }
+
 
     // Navigation properties
     public ICollection<TeamMember> Members { get; set; } = new List<TeamMember>();

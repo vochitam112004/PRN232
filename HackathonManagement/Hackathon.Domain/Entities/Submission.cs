@@ -32,4 +32,9 @@ public class Submission
     // Phase 4 properties
     public ICollection<JudgeScore> JudgeScores { get; set; } = new List<JudgeScore>();
     public ICollection<RoundResult> RoundResults { get; set; } = new List<RoundResult>();
+    // Phase 5 - Disqualification
+    public bool IsDisqualified { get; set; } = false;
+    public DateTime? DisqualifiedAt { get; set; }
+    public Guid? DisqualifiedBy { get; set; }
+    public string? DisqualifyReason { get; set; }
 }
