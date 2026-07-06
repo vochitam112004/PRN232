@@ -4,6 +4,7 @@ using Hackathon.Infrastructure.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Hackathon.Infrastructure.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20260704042431_CtamAddlogger")]
+    partial class CtamAddlogger
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -229,7 +232,7 @@ namespace Hackathon.Infrastructure.Migrations
                         {
                             Id = new Guid("11111111-1111-1111-1111-111111111111"),
                             AccessFailedCount = 0,
-                            ConcurrencyStamp = "1f5aebf3-e06c-4ae8-82ed-e2aabe5d4ede",
+                            ConcurrencyStamp = "f722d0a6-339e-4250-aedb-551492d38b90",
                             CreatedAt = new DateTime(2025, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
                             Email = "organizer@hackathon.com",
                             EmailConfirmed = true,
@@ -237,9 +240,9 @@ namespace Hackathon.Infrastructure.Migrations
                             LockoutEnabled = false,
                             NormalizedEmail = "ORGANIZER@HACKATHON.COM",
                             NormalizedUserName = "ORGANIZER@HACKATHON.COM",
-                            PasswordHash = "AQAAAAIAAYagAAAAEH+ajXvaoGSzVQO+lTnTUZhgwp0o+mcyU8ccJfYcssjiU/X3Ot9CYSBagQPwpnOGOQ==",
+                            PasswordHash = "AQAAAAIAAYagAAAAED/xm+OT0qROR2K2XqKurzv5exNQNz87WRG9uvccVsTdhGGzyYuMBYz5iP0fo0sxuQ==",
                             PhoneNumberConfirmed = false,
-                            SecurityStamp = "cf57a76d-28e4-4364-a93d-32ba79cd993c",
+                            SecurityStamp = "288bd5a1-1f23-4904-b964-106c5b4675d0",
                             Status = "approved",
                             TwoFactorEnabled = false,
                             UpdatedAt = new DateTime(2025, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
@@ -249,7 +252,7 @@ namespace Hackathon.Infrastructure.Migrations
                         {
                             Id = new Guid("22222222-2222-2222-2222-222222222222"),
                             AccessFailedCount = 0,
-                            ConcurrencyStamp = "5778ba83-8122-440d-bdf5-9e1cfb26d4c8",
+                            ConcurrencyStamp = "0b16771a-67ea-433d-9402-9ef0064c11c9",
                             CreatedAt = new DateTime(2025, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
                             Email = "judge.internal@hackathon.com",
                             EmailConfirmed = true,
@@ -257,9 +260,9 @@ namespace Hackathon.Infrastructure.Migrations
                             LockoutEnabled = false,
                             NormalizedEmail = "JUDGE.INTERNAL@HACKATHON.COM",
                             NormalizedUserName = "JUDGE.INTERNAL@HACKATHON.COM",
-                            PasswordHash = "AQAAAAIAAYagAAAAEMsuiLkNcGeacqJCYdY/zD9z01K4EONTBnn9vOb3jxczJWy5QIUPIdBqBNNxJr5jmA==",
+                            PasswordHash = "AQAAAAIAAYagAAAAECsOuvjkq3vFYuloDQCeisdQcQhc4XUBR6fOQivEpdjFkRQQv8IOY315baxbFUKStw==",
                             PhoneNumberConfirmed = false,
-                            SecurityStamp = "c5e1100c-758f-45fc-abf2-8d1523e80675",
+                            SecurityStamp = "67410e2a-919d-4311-8012-38bf99cea3a1",
                             Status = "approved",
                             TwoFactorEnabled = false,
                             UpdatedAt = new DateTime(2025, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
@@ -269,7 +272,7 @@ namespace Hackathon.Infrastructure.Migrations
                         {
                             Id = new Guid("33333333-3333-3333-3333-333333333333"),
                             AccessFailedCount = 0,
-                            ConcurrencyStamp = "8cae5526-afe0-4168-b176-d1daf6d60e08",
+                            ConcurrencyStamp = "f3933bd6-fb48-43ff-965a-185dc01a0541",
                             CreatedAt = new DateTime(2025, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
                             Email = "judge.guest@hackathon.com",
                             EmailConfirmed = true,
@@ -277,9 +280,9 @@ namespace Hackathon.Infrastructure.Migrations
                             LockoutEnabled = false,
                             NormalizedEmail = "JUDGE.GUEST@HACKATHON.COM",
                             NormalizedUserName = "JUDGE.GUEST@HACKATHON.COM",
-                            PasswordHash = "AQAAAAIAAYagAAAAEFoJrUADRh8MkzzXR+8Y6g3EkMlkP0OWmu6hjoW1A1bq1DYM4gzBWB8YXpt66pOb/g==",
+                            PasswordHash = "AQAAAAIAAYagAAAAEGLuwxdUshj86zZYiuVU1T1FIIXoHzMnyYLWY5YA8LgSBSCwhaZkNyJAuYcNKYoLYg==",
                             PhoneNumberConfirmed = false,
-                            SecurityStamp = "1e7e51f3-f978-4392-9f00-833a2079f41d",
+                            SecurityStamp = "b07637cc-153d-4443-97f4-2020496e563a",
                             Status = "approved",
                             TwoFactorEnabled = false,
                             UpdatedAt = new DateTime(2025, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
@@ -289,7 +292,7 @@ namespace Hackathon.Infrastructure.Migrations
                         {
                             Id = new Guid("44444444-4444-4444-4444-444444444444"),
                             AccessFailedCount = 0,
-                            ConcurrencyStamp = "22cb76ee-869d-4e07-8541-346873346ba2",
+                            ConcurrencyStamp = "9a570a71-8201-4eed-be42-2d19964f2f07",
                             CreatedAt = new DateTime(2025, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
                             Email = "mentor@hackathon.com",
                             EmailConfirmed = true,
@@ -297,9 +300,9 @@ namespace Hackathon.Infrastructure.Migrations
                             LockoutEnabled = false,
                             NormalizedEmail = "MENTOR@HACKATHON.COM",
                             NormalizedUserName = "MENTOR@HACKATHON.COM",
-                            PasswordHash = "AQAAAAIAAYagAAAAEI9CM4xYAb+9Uw5CHVZVUyuE59AIECIY/DoQSJNnVueqpU1eiporH/WzrKoFvw5EbQ==",
+                            PasswordHash = "AQAAAAIAAYagAAAAENgLIbIeKxAF1swXz9U1Wf4OoPtF+P3iIukfA3y0CZYxLCvEdUPHlscquoztMKiuzA==",
                             PhoneNumberConfirmed = false,
-                            SecurityStamp = "b58c08e9-933b-44a6-99c8-278ea20f244c",
+                            SecurityStamp = "7af40786-5efc-4a17-9fc3-be09e50a9c59",
                             Status = "approved",
                             TwoFactorEnabled = false,
                             UpdatedAt = new DateTime(2025, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
@@ -309,7 +312,7 @@ namespace Hackathon.Infrastructure.Migrations
                         {
                             Id = new Guid("55555555-5555-5555-5555-555555555555"),
                             AccessFailedCount = 0,
-                            ConcurrencyStamp = "dc7239e1-60c2-4fc0-b827-b900b50dd805",
+                            ConcurrencyStamp = "7646efb0-f4b7-427d-9229-82c2ffcc87b3",
                             CreatedAt = new DateTime(2025, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
                             Email = "student.fpt@hackathon.com",
                             EmailConfirmed = true,
@@ -317,9 +320,9 @@ namespace Hackathon.Infrastructure.Migrations
                             LockoutEnabled = false,
                             NormalizedEmail = "STUDENT.FPT@HACKATHON.COM",
                             NormalizedUserName = "STUDENT.FPT@HACKATHON.COM",
-                            PasswordHash = "AQAAAAIAAYagAAAAEE6t2+2LjfOCtgJDN+1PMawN8xVZN1O4pepjnCqZbe394TxgK3dX0JijAIVLAfmO5w==",
+                            PasswordHash = "AQAAAAIAAYagAAAAEJTiyWWKw5Xy0O9e/F5RTs3bOSKq78tvvgpoiTtRFrUM6TC8XisGcpiMwMw1zhCXKg==",
                             PhoneNumberConfirmed = false,
-                            SecurityStamp = "95036333-9fa1-475c-9274-8dc45c52f833",
+                            SecurityStamp = "799103fd-1537-4eb2-a8dc-e1f71c39f3da",
                             Status = "approved",
                             TwoFactorEnabled = false,
                             UpdatedAt = new DateTime(2025, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
@@ -329,7 +332,7 @@ namespace Hackathon.Infrastructure.Migrations
                         {
                             Id = new Guid("66666666-6666-6666-6666-666666666666"),
                             AccessFailedCount = 0,
-                            ConcurrencyStamp = "9419124a-a7b4-4df0-902b-80d5ea836b11",
+                            ConcurrencyStamp = "fa198bb7-f163-41e8-ad3f-378c160ab125",
                             CreatedAt = new DateTime(2025, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
                             Email = "student.external@hackathon.com",
                             EmailConfirmed = true,
@@ -337,9 +340,9 @@ namespace Hackathon.Infrastructure.Migrations
                             LockoutEnabled = false,
                             NormalizedEmail = "STUDENT.EXTERNAL@HACKATHON.COM",
                             NormalizedUserName = "STUDENT.EXTERNAL@HACKATHON.COM",
-                            PasswordHash = "AQAAAAIAAYagAAAAEEQVojFUWYIh/iEbbPqJNAJT66klN9Zl4Ku8NCXiUrJ7Z/zbzigYETqP7G3KTrhPRg==",
+                            PasswordHash = "AQAAAAIAAYagAAAAEOGPOcDTxHMuEA8a4khgSbm5U14EKBu3jSYIdw39GOkx9gp8LIRmHFi6ZJRkZQSbYw==",
                             PhoneNumberConfirmed = false,
-                            SecurityStamp = "06cd9691-bb0d-4da7-870b-cd8dcb73c9eb",
+                            SecurityStamp = "ee47dfd4-5b55-4199-8b98-9a4266e892e4",
                             Status = "approved",
                             TwoFactorEnabled = false,
                             UpdatedAt = new DateTime(2025, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
@@ -353,14 +356,11 @@ namespace Hackathon.Infrastructure.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<string>("Action")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                    b.Property<int>("Action")
+                        .HasColumnType("int");
 
                     b.Property<DateTime>("CreatedAt")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("datetime2")
-                        .HasDefaultValueSql("GETUTCDATE()");
+                        .HasColumnType("datetime2");
 
                     b.Property<string>("IpAddress")
                         .HasMaxLength(45)
@@ -386,81 +386,7 @@ namespace Hackathon.Infrastructure.Migrations
 
                     b.HasIndex("PerformedBy");
 
-                    b.ToTable("AuditLogs");
-                });
-
-            modelBuilder.Entity("Hackathon.Domain.Entities.Award", b =>
-                {
-                    b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<string>("AwardType")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<Guid?>("CategoryId")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<DateTime>("CreatedAt")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("datetime2")
-                        .HasDefaultValueSql("GETUTCDATE()");
-
-                    b.Property<string>("Description")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<Guid>("EventId")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<string>("Name")
-                        .IsRequired()
-                        .HasMaxLength(255)
-                        .HasColumnType("nvarchar(255)");
-
-                    b.Property<string>("PrizeValue")
-                        .HasMaxLength(100)
-                        .HasColumnType("nvarchar(100)");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("CategoryId");
-
-                    b.HasIndex("EventId");
-
-                    b.ToTable("Awards");
-                });
-
-            modelBuilder.Entity("Hackathon.Domain.Entities.AwardRecipient", b =>
-                {
-                    b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<Guid>("AwardId")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<DateTime>("GrantedAt")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("datetime2")
-                        .HasDefaultValueSql("GETUTCDATE()");
-
-                    b.Property<Guid>("GrantedBy")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<string>("Note")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<Guid>("TeamId")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("AwardId");
-
-                    b.HasIndex("TeamId");
-
-                    b.ToTable("AwardRecipients");
+                    b.ToTable("AuditLogs", (string)null);
                 });
 
             modelBuilder.Entity("Hackathon.Domain.Entities.Category", b =>
@@ -776,39 +702,6 @@ namespace Hackathon.Infrastructure.Migrations
                     b.ToTable("JudgeScores", (string)null);
                 });
 
-            modelBuilder.Entity("Hackathon.Domain.Entities.Notification", b =>
-                {
-                    b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<string>("Body")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<DateTime>("CreatedAt")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("datetime2")
-                        .HasDefaultValueSql("GETUTCDATE()");
-
-                    b.Property<Guid?>("EventId")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<bool>("IsRead")
-                        .HasColumnType("bit");
-
-                    b.Property<string>("Title")
-                        .IsRequired()
-                        .HasMaxLength(255)
-                        .HasColumnType("nvarchar(255)");
-
-                    b.Property<Guid>("UserId")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("Notifications");
-                });
-
             modelBuilder.Entity("Hackathon.Domain.Entities.RefreshToken", b =>
                 {
                     b.Property<Guid>("Id")
@@ -1056,18 +949,6 @@ namespace Hackathon.Infrastructure.Migrations
                     b.Property<string>("Description")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<DateTime?>("DisqualifiedAt")
-                        .HasColumnType("datetime2");
-
-                    b.Property<Guid?>("DisqualifiedBy")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<string>("DisqualifyReason")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<bool>("IsDisqualified")
-                        .HasColumnType("bit");
-
                     b.Property<string>("RepoDescription")
                         .HasColumnType("nvarchar(max)");
 
@@ -1135,22 +1016,10 @@ namespace Hackathon.Infrastructure.Migrations
                     b.Property<string>("Description")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<DateTime?>("DisqualifiedAt")
-                        .HasColumnType("datetime2");
-
-                    b.Property<Guid?>("DisqualifiedBy")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<string>("DisqualifyReason")
-                        .HasColumnType("nvarchar(max)");
-
                     b.Property<string>("InviteCode")
                         .IsRequired()
                         .HasMaxLength(50)
                         .HasColumnType("nvarchar(50)");
-
-                    b.Property<bool>("IsDisqualified")
-                        .HasColumnType("bit");
 
                     b.Property<Guid>("LeaderId")
                         .HasColumnType("uniqueidentifier");
@@ -1355,47 +1224,10 @@ namespace Hackathon.Infrastructure.Migrations
                     b.HasOne("Hackathon.Domain.Entities.ApplicationUser", "PerformedByUser")
                         .WithMany()
                         .HasForeignKey("PerformedBy")
-                        .OnDelete(DeleteBehavior.NoAction)
+                        .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
                     b.Navigation("PerformedByUser");
-                });
-
-            modelBuilder.Entity("Hackathon.Domain.Entities.Award", b =>
-                {
-                    b.HasOne("Hackathon.Domain.Entities.Category", "Category")
-                        .WithMany()
-                        .HasForeignKey("CategoryId")
-                        .OnDelete(DeleteBehavior.NoAction);
-
-                    b.HasOne("Hackathon.Domain.Entities.Event", "Event")
-                        .WithMany()
-                        .HasForeignKey("EventId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Category");
-
-                    b.Navigation("Event");
-                });
-
-            modelBuilder.Entity("Hackathon.Domain.Entities.AwardRecipient", b =>
-                {
-                    b.HasOne("Hackathon.Domain.Entities.Award", "Award")
-                        .WithMany("Recipients")
-                        .HasForeignKey("AwardId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("Hackathon.Domain.Entities.Team", "Team")
-                        .WithMany()
-                        .HasForeignKey("TeamId")
-                        .OnDelete(DeleteBehavior.NoAction)
-                        .IsRequired();
-
-                    b.Navigation("Award");
-
-                    b.Navigation("Team");
                 });
 
             modelBuilder.Entity("Hackathon.Domain.Entities.Category", b =>
@@ -1724,11 +1556,6 @@ namespace Hackathon.Infrastructure.Migrations
                     b.Navigation("StudentProfile");
 
                     b.Navigation("TeamMemberships");
-                });
-
-            modelBuilder.Entity("Hackathon.Domain.Entities.Award", b =>
-                {
-                    b.Navigation("Recipients");
                 });
 
             modelBuilder.Entity("Hackathon.Domain.Entities.Category", b =>

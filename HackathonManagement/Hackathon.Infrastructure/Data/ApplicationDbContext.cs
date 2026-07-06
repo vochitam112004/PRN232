@@ -35,6 +35,11 @@ public class ApplicationDbContext : IdentityDbContext<ApplicationUser, Applicati
     public DbSet<JudgeAssignment> JudgeAssignments => Set<JudgeAssignment>();
     public DbSet<JudgeScore> JudgeScores => Set<JudgeScore>();
     public DbSet<RoundResult> RoundResults => Set<RoundResult>();
+    // Phase 5 Entities
+    public DbSet<AuditLog> AuditLogs => Set<AuditLog>();
+    public DbSet<Award> Awards { get; set; }
+    public DbSet<AwardRecipient> AwardRecipients { get; set; }
+    public DbSet<Notification> Notifications { get; set; }
 
     protected override void OnModelCreating(ModelBuilder builder)
     {
@@ -77,6 +82,12 @@ public class ApplicationDbContext : IdentityDbContext<ApplicationUser, Applicati
 
         SeedRoles(builder);
         SeedUsers(builder);
+
+        //Configure Phase 5 Entities
+        ConfigureAuditLog(builder);
+        ConfigureAward(builder);
+        ConfigureAuditLog(builder);
+        ConfigureNotification(builder);
     }
 
 
@@ -140,6 +151,87 @@ public class ApplicationDbContext : IdentityDbContext<ApplicationUser, Applicati
             e.Property(s => s.UniversityName).HasMaxLength(255);
             e.Property(s => s.IsFptStudent).HasDefaultValue(true);
             e.Property(s => s.CreatedAt).HasDefaultValueSql("GETUTCDATE()");
+        });
+    }
+    private static void ConfigureAuditLog(ModelBuilder b)
+    {
+        b.Entity<AuditLog>(e =>
+        {
+            e.HasKey(a => a.Id);
+
+            e.Property(a => a.Action)
+                .HasConversion(
+                    v => ToSnakeCase(v),
+                    v => FromSnakeCase<AuditAction>(v))
+                .IsRequired();
+
+            e.Property(a => a.PerformedBy).IsRequired();
+            e.Property(a => a.TargetType).HasMaxLength(50);
+            e.Property(a => a.Payload).HasColumnType("nvarchar(max)");
+            e.Property(a => a.Reason).HasColumnType("nvarchar(max)");
+            e.Property(a => a.IpAddress).HasMaxLength(45);
+            e.Property(a => a.CreatedAt).HasDefaultValueSql("GETUTCDATE()");
+
+            e.HasOne(a => a.PerformedByUser)
+                .WithMany()
+                .HasForeignKey(a => a.PerformedBy)
+                .OnDelete(DeleteBehavior.NoAction);
+        });
+    }
+    private static void ConfigureAward(ModelBuilder b)
+    {
+        b.Entity<Award>(e =>
+        {
+            e.HasKey(a => a.Id);
+            e.Property(a => a.Name).HasMaxLength(255).IsRequired();
+
+            e.Property(a => a.AwardType)
+                .HasConversion(
+                    v => ToSnakeCase(v),
+                    v => FromSnakeCase<AwardType>(v))
+                .IsRequired();
+
+            e.Property(a => a.Description).HasColumnType("nvarchar(max)");
+            e.Property(a => a.PrizeValue).HasMaxLength(100);
+            e.Property(a => a.CreatedAt).HasDefaultValueSql("GETUTCDATE()");
+
+            e.HasOne(a => a.Event)
+                .WithMany()
+                .HasForeignKey(a => a.EventId)
+                .OnDelete(DeleteBehavior.Cascade);
+
+            e.HasOne(a => a.Category)
+                .WithMany()
+                .HasForeignKey(a => a.CategoryId)
+                .OnDelete(DeleteBehavior.NoAction);
+        });
+
+        b.Entity<AwardRecipient>(e =>
+        {
+            e.HasKey(x => x.Id);
+            e.Property(x => x.Note).HasColumnType("nvarchar(max)");
+            e.Property(x => x.GrantedAt).HasDefaultValueSql("GETUTCDATE()");
+
+            e.HasOne(x => x.Award)
+                .WithMany(a => a.Recipients)
+                .HasForeignKey(x => x.AwardId)
+                .OnDelete(DeleteBehavior.Cascade);
+
+            e.HasOne(x => x.Team)
+                .WithMany()
+                .HasForeignKey(x => x.TeamId)
+                .OnDelete(DeleteBehavior.NoAction);
+        });
+    }
+    private static void ConfigureNotification(ModelBuilder b)
+    {
+        b.Entity<Notification>(e =>
+        {
+            e.HasKey(n => n.Id);
+            e.Property(n => n.Title).HasMaxLength(255).IsRequired();
+            e.Property(n => n.Body).HasColumnType("nvarchar(max)");
+            e.Property(n => n.IsRead).IsRequired();
+            e.Property(n => n.CreatedAt).HasDefaultValueSql("GETUTCDATE()");
         });
     }
 
