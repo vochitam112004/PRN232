@@ -116,4 +116,61 @@ public class EventsController : BaseApiController
         return Ok(new { message = "Xóa sự kiện thành công." });
     }
 
+    /// <summary>Cập nhật thông tin cơ bản của sự kiện (Chỉ dành cho Ban Tổ Chức).</summary>
+    [HttpPut("{id:guid}")]
+    [Authorize(Roles = Roles.Organizer)]
+    public async Task<IActionResult> Update(Guid id, [FromBody] UpdateEventRequest request)
+    {
+        if (!ModelState.IsValid)
+            return BadRequest(ModelState);
+
+        var (success, error) = await _eventService.UpdateEventAsync(id, request);
+        if (!success)
+            return BadRequest(new { error });
+
+        return Ok(new { message = "Cập nhật sự kiện thành công." });
+    }
+
+    /// <summary>Thay đổi trạng thái sự kiện (Chỉ dành cho Ban Tổ Chức). Các trạng thái hợp lệ: draft, open_registration, ongoing, completed, cancelled.</summary>
+    [HttpPut("{id:guid}/status")]
+    [Authorize(Roles = Roles.Organizer)]
+    public async Task<IActionResult> UpdateStatus(Guid id, [FromBody] UpdateEventStatusRequest request)
+    {
+        if (!ModelState.IsValid)
+            return BadRequest(ModelState);
+
+        var (success, error) = await _eventService.UpdateEventStatusAsync(id, request);
+        if (!success)
+            return BadRequest(new { error });
+
+        return Ok(new { message = "Cập nhật trạng thái sự kiện thành công." });
+    }
+
+    /// <summary>Cập nhật thông tin một hạng mục (Chỉ dành cho Ban Tổ Chức).</summary>
+    [HttpPut("{id:guid}/categories/{categoryId:guid}")]
+    [Authorize(Roles = Roles.Organizer)]
+    public async Task<IActionResult> UpdateCategory(Guid id, Guid categoryId, [FromBody] CreateCategoryRequest request)
+    {
+        if (!ModelState.IsValid)
+            return BadRequest(ModelState);
+
+        var (success, error, category) = await _eventService.UpdateCategoryAsync(categoryId, request);
+        if (!success)
+            return BadRequest(new { error });
+
+        return Ok(category);
+    }
+
+    /// <summary>Xóa một hạng mục khỏi sự kiện (Chỉ dành cho Ban Tổ Chức).</summary>
+    [HttpDelete("{id:guid}/categories/{categoryId:guid}")]
+    [Authorize(Roles = Roles.Organizer)]
+    public async Task<IActionResult> DeleteCategory(Guid id, Guid categoryId)
+    {
+        var (success, error) = await _eventService.DeleteCategoryAsync(categoryId);
+        if (!success)
+            return BadRequest(new { error });
+
+        return Ok(new { message = "Xóa hạng mục thành công." });
+    }
+
 }

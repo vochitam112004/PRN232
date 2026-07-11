@@ -71,6 +71,19 @@ public class TeamRepository : ITeamRepository
             .ToListAsync();
     }
 
+    public async Task<IEnumerable<Team>> GetAllByStudentIdAsync(Guid studentId)
+    {
+        return await _db.Teams
+            .Include(t => t.Category)
+                .ThenInclude(c => c.Event)
+            .Include(t => t.Leader)
+            .Include(t => t.Members)
+                .ThenInclude(m => m.User)
+            .Where(t => t.LeaderId == studentId || t.Members.Any(m => m.UserId == studentId))
+            .OrderByDescending(t => t.CreatedAt)
+            .ToListAsync();
+    }
+
     public async Task AddAsync(Team team)
     {
         await _db.Teams.AddAsync(team);

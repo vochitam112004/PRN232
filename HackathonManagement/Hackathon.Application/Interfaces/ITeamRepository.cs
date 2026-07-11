@@ -11,6 +11,7 @@ public interface ITeamRepository
     Task<Team?> GetByIdWithMembersAsync(Guid id);
     Task<Team?> GetByInviteCodeAsync(string inviteCode);
     Task<Team?> GetByStudentIdInEventAsync(Guid studentId, Guid eventId);
+    Task<IEnumerable<Team>> GetAllByStudentIdAsync(Guid studentId);
     Task<IEnumerable<Team>> GetTeamsByCategoryAsync(Guid categoryId);
     Task AddAsync(Team team);
     void Update(Team team);

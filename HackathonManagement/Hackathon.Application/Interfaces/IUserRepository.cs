@@ -1,4 +1,5 @@
 using Hackathon.Domain.Entities;
+using Hackathon.Domain.Enums;
 using Microsoft.AspNetCore.Identity;
 
 namespace Hackathon.Application.Interfaces;
@@ -12,5 +13,11 @@ public interface IUserRepository
     Task<bool> CheckPasswordAsync(ApplicationUser user, string password);
     Task<IList<string>> GetRolesAsync(ApplicationUser user);
     Task<IdentityResult> AddToRoleAsync(ApplicationUser user, string role);
-    Task<IEnumerable<ApplicationUser>> GetByStatusAsync(Domain.Enums.UserStatus status);
+    Task<IEnumerable<ApplicationUser>> GetByStatusAsync(UserStatus status);
+    Task<(IEnumerable<ApplicationUser> Items, int TotalCount)> GetAllPagedAsync(
+        UserStatus? status = null,
+        string? role = null,
+        int page = 1,
+        int pageSize = 20);
 }
+

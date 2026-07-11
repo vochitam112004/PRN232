@@ -278,9 +278,108 @@ public class EventService : IEventService
         return (true, string.Empty, MapRoundResponse(round), isNew);
     }
 
+    public async Task<(bool Success, string Error)> UpdateEventAsync(Guid id, UpdateEventRequest request)
+    {
+        var ev = await _eventRepo.GetByIdWithDetailsAsync(id);
+        if (ev == null)
+            return (false, "Không tìm thấy sự kiện.");
+
+        if (request.RegistrationStart.HasValue && request.RegistrationEnd.HasValue
+            && request.RegistrationStart.Value >= request.RegistrationEnd.Value)
+            return (false, "Ngày bắt đầu đăng ký phải trước ngày kết thúc đăng ký.");
+
+        ev.Title = request.Title.Trim();
+        ev.Description = request.Description?.Trim();
+        ev.BannerUrl = request.BannerUrl?.Trim();
+        ev.RegistrationStart = request.RegistrationStart;
+        ev.RegistrationEnd = request.RegistrationEnd;
+        ev.UpdatedAt = DateTime.UtcNow;
+
+        _eventRepo.Update(ev);
+        await _eventRepo.SaveChangesAsync();
+
+        return (true, string.Empty);
+    }
+
+    public async Task<(bool Success, string Error)> UpdateEventStatusAsync(Guid id, UpdateEventStatusRequest request)
+    {
+        var ev = await _eventRepo.GetByIdWithDetailsAsync(id);
+        if (ev == null)
+            return (false, "Không tìm thấy sự kiện.");
+
+        // Parse status string → enum
+        var cleanStatus = request.Status.Replace("_", "").ToLower();
+        var statusMap = new Dictionary<string, Domain.Enums.EventStatus>
+        {
+            ["draft"] = Domain.Enums.EventStatus.Draft,
+            ["openregistration"] = Domain.Enums.EventStatus.OpenRegistration,
+            ["ongoing"] = Domain.Enums.EventStatus.Ongoing,
+            ["completed"] = Domain.Enums.EventStatus.Completed,
+            ["cancelled"] = Domain.Enums.EventStatus.Cancelled
+        };
+
+        if (!statusMap.TryGetValue(cleanStatus, out var newStatus))
+            return (false, $"Trạng thái không hợp lệ: '{request.Status}'. Giá trị hợp lệ: draft, open_registration, ongoing, completed, cancelled.");
+
+        ev.Status = newStatus;
+        ev.UpdatedAt = DateTime.UtcNow;
+
+        _eventRepo.Update(ev);
+        await _eventRepo.SaveChangesAsync();
+
+        return (true, string.Empty);
+    }
+
+    public async Task<(bool Success, string Error, CategoryResponse? Category)> UpdateCategoryAsync(Guid categoryId, CreateCategoryRequest request)
+    {
+        var category = await _eventRepo.GetCategoryByIdAsync(categoryId);
+        if (category == null)
+            return (false, "Không tìm thấy hạng mục.", null);
+
+        // Check duplicate name (excluding itself) — load event để kiểm tra
+        var ev = await _eventRepo.GetByIdWithDetailsAsync(category.EventId);
+        if (ev != null)
+        {
+            var duplicate = ev.Categories.Any(c =>
+                c.Id != categoryId &&
+                c.Name.Equals(request.Name.Trim(), StringComparison.OrdinalIgnoreCase));
+            if (duplicate)
+                return (false, "Hạng mục với tên này đã tồn tại trong sự kiện.", null);
+        }
+
+        category.Name = request.Name.Trim();
+        category.Description = request.Description?.Trim();
+        category.MaxTeams = request.MaxTeams;
+        category.UpdatedAt = DateTime.UtcNow;
+
+        await _eventRepo.SaveChangesAsync();
+
+        return (true, string.Empty, new CategoryResponse
+        {
+            Id = category.Id,
+            EventId = category.EventId,
+            Name = category.Name,
+            Description = category.Description,
+            MaxTeams = category.MaxTeams
+        });
+    }
+
+    public async Task<(bool Success, string Error)> DeleteCategoryAsync(Guid categoryId)
+    {
+        var category = await _eventRepo.GetCategoryByIdAsync(categoryId);
+        if (category == null)
+            return (false, "Không tìm thấy hạng mục.");
+
+        _eventRepo.RemoveCategory(category);
+        await _eventRepo.SaveChangesAsync();
+
+        return (true, string.Empty);
+    }
+
     public async Task<(bool Success, string Error)> DeleteEventAsync(Guid id)
     {
         var ev = await _eventRepo.GetByIdWithDetailsAsync(id);
+
         if (ev == null)
             return (false, "Không tìm thấy sự kiện.");
 

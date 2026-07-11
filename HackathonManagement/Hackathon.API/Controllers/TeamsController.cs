@@ -98,6 +98,18 @@ public class TeamsController : BaseApiController
         }
     }
 
+    /// <summary>Lấy tất cả đội thi mà user hiện tại đang tham gia (tất cả events).</summary>
+    [HttpGet("my")]
+    public async Task<IActionResult> GetMyTeams()
+    {
+        var userId = GetCurrentUserId();
+        if (userId == Guid.Empty)
+            return Unauthorized();
+
+        var teams = await _teamService.GetMyTeamsAsync(userId);
+        return Ok(teams);
+    }
+
     /// <summary>Lấy thông tin chi tiết một đội thi.</summary>
     [HttpGet("{id:guid}")]
     public async Task<IActionResult> GetById(Guid id)

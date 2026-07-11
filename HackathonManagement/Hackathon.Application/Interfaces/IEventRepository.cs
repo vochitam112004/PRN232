@@ -11,5 +11,8 @@ public interface IEventRepository
     void Delete(Event @event);
     void RemoveCriteria(IEnumerable<EventCriteria> criteria);
     void RemovePromotionRules(IEnumerable<RoundPromotionRule> rules);
+    Task<Category?> GetCategoryByIdAsync(Guid categoryId);
+    void RemoveCategory(Category category);
+    void RemoveRound(Round round);
     Task SaveChangesAsync();
 }

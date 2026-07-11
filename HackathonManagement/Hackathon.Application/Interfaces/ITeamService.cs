@@ -12,6 +12,7 @@ public interface ITeamService
     Task<bool> LeaveTeamAsync(Guid userId, Guid teamId);
     Task<TeamResponse?> GetTeamByIdAsync(Guid teamId);
     Task<TeamResponse?> GetStudentTeamAsync(Guid studentId, Guid eventId);
+    Task<IEnumerable<TeamResponse>> GetMyTeamsAsync(Guid studentId);
     Task<IEnumerable<TeamResponse>> GetTeamsByCategoryAsync(Guid categoryId);
     
     // Mentor assignments

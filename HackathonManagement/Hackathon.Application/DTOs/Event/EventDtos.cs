@@ -14,6 +14,26 @@ public class CreateEventRequest
     public Guid? CriteriaTemplateId { get; set; }
 }
 
+public class UpdateEventRequest
+{
+    [Required]
+    [MaxLength(255)]
+    public string Title { get; set; } = string.Empty;
+    public string? Description { get; set; }
+    public string? BannerUrl { get; set; }
+    public DateTime? RegistrationStart { get; set; }
+    public DateTime? RegistrationEnd { get; set; }
+}
+
+public class UpdateEventStatusRequest
+{
+    /// <summary>Trạng thái mới: draft | open_registration | ongoing | completed | cancelled</summary>
+    [Required]
+    public string Status { get; set; } = string.Empty;
+}
+
+
+
 public class EventResponse
 {
     public Guid Id { get; set; }

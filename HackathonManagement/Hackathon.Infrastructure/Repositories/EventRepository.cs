@@ -59,8 +59,24 @@ public class EventRepository : IEventRepository
         _db.RoundPromotionRules.RemoveRange(rules);
     }
 
+    public async Task<Category?> GetCategoryByIdAsync(Guid categoryId)
+    {
+        return await _db.Categories.FirstOrDefaultAsync(c => c.Id == categoryId);
+    }
+
+    public void RemoveCategory(Category category)
+    {
+        _db.Categories.Remove(category);
+    }
+
+    public void RemoveRound(Round round)
+    {
+        _db.Rounds.Remove(round);
+    }
+
     public async Task SaveChangesAsync()
     {
         await _db.SaveChangesAsync();
     }
 }
+

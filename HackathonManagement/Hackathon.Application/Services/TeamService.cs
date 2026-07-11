@@ -225,6 +225,12 @@ public class TeamService : ITeamService
         return await GetTeamByIdAsync(team.Id);
     }
 
+    public async Task<IEnumerable<TeamResponse>> GetMyTeamsAsync(Guid studentId)
+    {
+        var teams = await _teamRepo.GetAllByStudentIdAsync(studentId);
+        return teams.Select(MapToTeamResponse);
+    }
+
     public async Task<IEnumerable<TeamResponse>> GetTeamsByCategoryAsync(Guid categoryId)
     {
         var teams = await _teamRepo.GetTeamsByCategoryAsync(categoryId);

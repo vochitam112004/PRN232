@@ -11,3 +11,4 @@ public interface IScoringService
     Task<IEnumerable<SubmissionScoreResponse>> GetScoresForSubmissionAsync(Guid submissionId);
     Task<SubmissionScoreResponse?> GetScoreByJudgeAsync(Guid submissionId, Guid judgeId);
 }
+

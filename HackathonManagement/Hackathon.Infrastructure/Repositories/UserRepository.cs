@@ -41,4 +41,37 @@ public class UserRepository : IUserRepository
             .Where(u => u.Status == status)
             .OrderBy(u => u.CreatedAt)
             .ToListAsync();
+
+    public async Task<(IEnumerable<ApplicationUser> Items, int TotalCount)> GetAllPagedAsync(
+        UserStatus? status = null,
+        string? role = null,
+        int page = 1,
+        int pageSize = 20)
+    {
+        var query = _userManager.Users
+            .Include(u => u.StudentProfile)
+            .AsQueryable();
+
+        if (status.HasValue)
+            query = query.Where(u => u.Status == status.Value);
+
+        // Filter by role requires a cross-join with AspNetUserRoles — use subquery via UserManager
+        IQueryable<ApplicationUser> finalQuery = query;
+        if (!string.IsNullOrWhiteSpace(role))
+        {
+            // Get users in role as a set of IDs first
+            var usersInRole = await _userManager.GetUsersInRoleAsync(role.Trim().ToLower());
+            var roleUserIds = usersInRole.Select(u => u.Id).ToHashSet();
+            finalQuery = query.Where(u => roleUserIds.Contains(u.Id));
+        }
+
+        var totalCount = await finalQuery.CountAsync();
+        var items = await finalQuery
+            .OrderByDescending(u => u.CreatedAt)
+            .Skip((page - 1) * pageSize)
+            .Take(pageSize)
+            .ToListAsync();
+
+        return (items, totalCount);
+    }
 }
