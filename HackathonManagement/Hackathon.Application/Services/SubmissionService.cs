@@ -149,9 +149,11 @@ public class SubmissionService : ISubmissionService
         {
             Id = sub.Id,
             TeamId = sub.TeamId,
-            TeamName = sub.Team.Name,
+            TeamName = sub.Team?.Name ?? string.Empty,
+            CategoryId = sub.Team?.CategoryId,
+            CategoryName = sub.Team?.Category?.Name ?? string.Empty,
             RoundId = sub.RoundId,
-            RoundName = sub.Round.Name,
+            RoundName = sub.Round?.Name ?? string.Empty,
             RepoUrl = sub.RepoUrl,
             DemoUrl = sub.DemoUrl,
             VideoUrl = sub.VideoUrl,

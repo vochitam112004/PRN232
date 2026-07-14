@@ -22,6 +22,7 @@ public class SubmissionRepository : ISubmissionRepository
     {
         return await _db.Submissions
             .Include(s => s.Team)
+                .ThenInclude(t => t.Category)
             .Include(s => s.Round)
             .FirstOrDefaultAsync(s => s.Id == id);
     }
@@ -30,6 +31,7 @@ public class SubmissionRepository : ISubmissionRepository
     {
         return await _db.Submissions
             .Include(s => s.Team)
+                .ThenInclude(t => t.Category)
             .Include(s => s.Round)
             .FirstOrDefaultAsync(s => s.TeamId == teamId && s.RoundId == roundId);
     }
@@ -38,6 +40,7 @@ public class SubmissionRepository : ISubmissionRepository
     {
         return await _db.Submissions
             .Include(s => s.Team)
+                .ThenInclude(t => t.Category)
             .Include(s => s.Round)
             .Where(s => s.TeamId == teamId)
             .OrderByDescending(s => s.SubmittedAt)
@@ -48,6 +51,7 @@ public class SubmissionRepository : ISubmissionRepository
     {
         return await _db.Submissions
             .Include(s => s.Team)
+                .ThenInclude(t => t.Category)
             .Include(s => s.Round)
             .Where(s => s.RoundId == roundId)
             .OrderByDescending(s => s.SubmittedAt)

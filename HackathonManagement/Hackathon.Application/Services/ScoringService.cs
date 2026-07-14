@@ -66,7 +66,6 @@ public class ScoringService : IScoringService
         }
 
         bool anyNew = false;
-        bool anyUpdated = false;
 
         foreach (var criteriaScore in request.Scores)
         {
@@ -77,7 +76,6 @@ public class ScoringService : IScoringService
                 existingScore.Comment = criteriaScore.Comment;
                 existingScore.UpdatedAt = DateTime.UtcNow;
                 _scoreRepository.Update(existingScore);
-                anyUpdated = true;
             }
             else
             {

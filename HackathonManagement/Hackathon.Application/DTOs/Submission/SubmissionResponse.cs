@@ -7,6 +7,8 @@ public class SubmissionResponse
     public Guid Id { get; set; }
     public Guid TeamId { get; set; }
     public string TeamName { get; set; } = string.Empty;
+    public Guid? CategoryId { get; set; }
+    public string CategoryName { get; set; } = string.Empty;
     public Guid RoundId { get; set; }
     public string RoundName { get; set; } = string.Empty;
 

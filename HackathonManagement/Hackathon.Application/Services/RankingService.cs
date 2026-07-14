@@ -108,7 +108,8 @@ public class RankingService : IRankingService
                 TotalScore = r.TotalScore,
                 Rank = r.Rank,
                 IsAdvanced = r.IsAdvanced,
-                Note = r.Note
+                Note = r.Note,
+                RepoUrl = r.Submission?.RepoUrl
             }).OrderBy(r => r.Rank).ToList()
         };
     }
@@ -165,7 +166,8 @@ public class RankingService : IRankingService
                 TotalScore = r.TotalScore,
                 Rank = r.Rank,
                 IsAdvanced = r.IsAdvanced,
-                Note = r.Note
+                Note = r.Note,
+                RepoUrl = r.Submission?.RepoUrl
             }).ToList()
         };
     }

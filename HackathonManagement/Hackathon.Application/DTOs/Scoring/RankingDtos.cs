@@ -21,6 +21,7 @@ public class TeamResultDto
     public int Rank { get; set; }
     public bool IsAdvanced { get; set; }
     public string? Note { get; set; }
+    public string? RepoUrl { get; set; }
 }
 
 /// <summary>Xếp hạng toàn sự kiện (tổng hợp vòng cuối cùng).</summary>
