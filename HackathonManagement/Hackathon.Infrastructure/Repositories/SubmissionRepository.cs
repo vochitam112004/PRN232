@@ -52,6 +52,8 @@ public class SubmissionRepository : ISubmissionRepository
         return await _db.Submissions
             .Include(s => s.Team)
                 .ThenInclude(t => t.Category)
+            .Include(s => s.Team)
+                .ThenInclude(t => t.Members)
             .Include(s => s.Round)
             .Where(s => s.RoundId == roundId)
             .OrderByDescending(s => s.SubmittedAt)

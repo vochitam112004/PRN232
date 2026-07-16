@@ -1,4 +1,4 @@
-﻿using Hackathon.Application.Interfaces;
+using Hackathon.Application.Interfaces;
 using Hackathon.Domain.Entities;
 
 namespace Hackathon.Application.Services;
@@ -25,6 +25,24 @@ public class NotificationService : INotificationService
             Body = body,
             IsRead = false
             // CreatedAt: dùng default SQL GETUTCDATE()
+        });
+
+        await _repo.AddRangeAsync(notifications);
+        await _repo.SaveChangesAsync();
+    }
+
+    public async Task NotifyUsersAsync(IEnumerable<Guid> userIds, string title, string? body, Guid? eventId = null)
+    {
+        var distinctUserIds = userIds.Distinct().ToList();
+        if (distinctUserIds.Count == 0) return;
+
+        var notifications = distinctUserIds.Select(uid => new Notification
+        {
+            UserId = uid,
+            EventId = eventId,
+            Title = title,
+            Body = body,
+            IsRead = false
         });
 
         await _repo.AddRangeAsync(notifications);

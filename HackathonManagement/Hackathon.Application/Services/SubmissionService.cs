@@ -16,19 +16,22 @@ public class SubmissionService : ISubmissionService
     private readonly IEventRepository _eventRepo;
     private readonly IUserRepository _userRepo;
     private readonly IGitMetadataService _gitMetadataService;
+    private readonly IRoundResultRepository _roundResultRepo;
 
     public SubmissionService(
         ISubmissionRepository submissionRepo,
         ITeamRepository teamRepo,
         IEventRepository eventRepo,
         IUserRepository userRepo,
-        IGitMetadataService gitMetadataService)
+        IGitMetadataService gitMetadataService,
+        IRoundResultRepository roundResultRepo)
     {
         _submissionRepo = submissionRepo;
         _teamRepo = teamRepo;
         _eventRepo = eventRepo;
         _userRepo = userRepo;
         _gitMetadataService = gitMetadataService;
+        _roundResultRepo = roundResultRepo;
     }
 
     public async Task<SubmissionResponse> SubmitProjectAsync(Guid userId, CreateSubmissionRequest request)
@@ -77,6 +80,28 @@ public class SubmissionService : ISubmissionService
 
         if (detailedTeam.Members.Count < 3)
             throw new InvalidOperationException($"Đội thi của bạn hiện tại mới có {detailedTeam.Members.Count} thành viên. Quy định đội phải có từ 3 đến 5 thành viên mới được nộp bài.");
+
+        // Check if there is a previous round. If yes, check if the team advanced.
+        var previousRound = parentEvent.Rounds
+            .Where(r => r.RoundOrder < round.RoundOrder)
+            .OrderByDescending(r => r.RoundOrder)
+            .FirstOrDefault();
+
+        if (previousRound != null)
+        {
+            // Find submission of this team in the previous round
+            var previousSubmission = await _submissionRepo.GetByTeamAndRoundAsync(detailedTeam.Id, previousRound.Id);
+            if (previousSubmission == null)
+            {
+                throw new InvalidOperationException($"Đội thi chưa nộp bài hoặc chưa tham gia {previousRound.Name} nên không thể nộp bài vòng này.");
+            }
+
+            var previousResult = await _roundResultRepo.GetBySubmissionAsync(previousSubmission.Id, previousRound.Id);
+            if (previousResult == null || !previousResult.IsAdvanced)
+            {
+                throw new InvalidOperationException($"Đội thi của bạn không đủ điều kiện đi tiếp từ {previousRound.Name}.");
+            }
+        }
 
         // Check if submission already exists
         var submission = await _submissionRepo.GetByTeamAndRoundAsync(detailedTeam.Id, request.RoundId);

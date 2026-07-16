@@ -15,17 +15,20 @@ public class RankingService : IRankingService
     private readonly IJudgeScoreRepository _scoreRepository;
     private readonly ISubmissionRepository _submissionRepository;
     private readonly IEventRepository _eventRepository;
+    private readonly INotificationService _notificationService;
 
     public RankingService(
         IRoundResultRepository roundResultRepository,
         IJudgeScoreRepository scoreRepository,
         ISubmissionRepository submissionRepository,
-        IEventRepository eventRepository)
+        IEventRepository eventRepository,
+        INotificationService notificationService)
     {
         _roundResultRepository = roundResultRepository;
         _scoreRepository = scoreRepository;
         _submissionRepository = submissionRepository;
         _eventRepository = eventRepository;
+        _notificationService = notificationService;
     }
 
     public async Task<RoundRankingResponse> CalculateRankingAndAdvanceAsync(Guid roundId)
@@ -86,6 +89,37 @@ public class RankingService : IRankingService
 
         await _roundResultRepository.AddRangeAsync(results);
         await _roundResultRepository.SaveChangesAsync();
+
+        // 7. Gửi thông báo cho thành viên đội thi (pass / fail)
+        var advancedTeamMemberIds = submissions
+            .Where(s => results.Any(r => r.SubmissionId == s.Id && r.IsAdvanced))
+            .SelectMany(s => s.Team?.Members?.Select(m => m.UserId) ?? Array.Empty<Guid>())
+            .ToList();
+
+        var failedTeamMemberIds = submissions
+            .Where(s => results.Any(r => r.SubmissionId == s.Id && !r.IsAdvanced))
+            .SelectMany(s => s.Team?.Members?.Select(m => m.UserId) ?? Array.Empty<Guid>())
+            .ToList();
+
+        if (advancedTeamMemberIds.Any())
+        {
+            await _notificationService.NotifyUsersAsync(
+                advancedTeamMemberIds,
+                "Chúc mừng! Đội của bạn đã lọt vào vòng trong.",
+                $"Đội của bạn đã xuất sắc vượt qua vòng thi '{round.Name}' và chính thức được bước tiếp vào vòng trong. Hãy chuẩn bị thật tốt nhé!",
+                parentEvent.Id
+            );
+        }
+
+        if (failedTeamMemberIds.Any())
+        {
+            await _notificationService.NotifyUsersAsync(
+                failedTeamMemberIds,
+                "Thông báo kết quả vòng thi",
+                $"Rất tiếc, đội của bạn đã không vượt qua vòng thi '{round.Name}'. Cảm ơn bạn đã tham gia và nỗ lực hết mình. Chúc bạn may mắn trong các cuộc thi tới!",
+                parentEvent.Id
+            );
+        }
 
         return await GetRoundResultsAsync(roundId);
     }

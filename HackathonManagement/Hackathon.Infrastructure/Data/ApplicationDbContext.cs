@@ -279,6 +279,10 @@ public class ApplicationDbContext : IdentityDbContext<ApplicationUser, Applicati
         var mentorId = Guid.Parse("44444444-4444-4444-4444-444444444444");
         var studentFptId = Guid.Parse("55555555-5555-5555-5555-555555555555");
         var studentExternalId = Guid.Parse("66666666-6666-6666-6666-666666666666");
+        var student3Id = Guid.Parse("77777777-7777-7777-7777-777777777777");
+        var student4Id = Guid.Parse("88888888-8888-8888-8888-888888888888");
+        var student5Id = Guid.Parse("99999999-9999-9999-9999-999999999999");
+        var student6Id = Guid.Parse("AAAAAAAA-AAAA-AAAA-AAAA-AAAAAAAAAAAA");
 
         var users = new List<ApplicationUser>
         {
@@ -371,6 +375,66 @@ public class ApplicationDbContext : IdentityDbContext<ApplicationUser, Applicati
                 UpdatedAt = new DateTime(2025, 1, 1, 0, 0, 0, DateTimeKind.Utc),
                 SecurityStamp = Guid.NewGuid().ToString("D"),
                 PasswordHash = hasher.HashPassword(null!, "Password123")
+            },
+            new()
+            {
+                Id = student3Id,
+                FullName = "Sinh Viên FPT 3",
+                Email = "student3@hackathon.com",
+                NormalizedEmail = "STUDENT3@HACKATHON.COM",
+                UserName = "student3@hackathon.com",
+                NormalizedUserName = "STUDENT3@HACKATHON.COM",
+                EmailConfirmed = true,
+                Status = UserStatus.Approved,
+                CreatedAt = new DateTime(2025, 1, 1, 0, 0, 0, DateTimeKind.Utc),
+                UpdatedAt = new DateTime(2025, 1, 1, 0, 0, 0, DateTimeKind.Utc),
+                SecurityStamp = Guid.NewGuid().ToString("D"),
+                PasswordHash = hasher.HashPassword(null!, "Password123")
+            },
+            new()
+            {
+                Id = student4Id,
+                FullName = "Sinh Viên FPT 4",
+                Email = "student4@hackathon.com",
+                NormalizedEmail = "STUDENT4@HACKATHON.COM",
+                UserName = "student4@hackathon.com",
+                NormalizedUserName = "STUDENT4@HACKATHON.COM",
+                EmailConfirmed = true,
+                Status = UserStatus.Approved,
+                CreatedAt = new DateTime(2025, 1, 1, 0, 0, 0, DateTimeKind.Utc),
+                UpdatedAt = new DateTime(2025, 1, 1, 0, 0, 0, DateTimeKind.Utc),
+                SecurityStamp = Guid.NewGuid().ToString("D"),
+                PasswordHash = hasher.HashPassword(null!, "Password123")
+            },
+            new()
+            {
+                Id = student5Id,
+                FullName = "Sinh Viên FPT 5",
+                Email = "student5@hackathon.com",
+                NormalizedEmail = "STUDENT5@HACKATHON.COM",
+                UserName = "student5@hackathon.com",
+                NormalizedUserName = "STUDENT5@HACKATHON.COM",
+                EmailConfirmed = true,
+                Status = UserStatus.Approved,
+                CreatedAt = new DateTime(2025, 1, 1, 0, 0, 0, DateTimeKind.Utc),
+                UpdatedAt = new DateTime(2025, 1, 1, 0, 0, 0, DateTimeKind.Utc),
+                SecurityStamp = Guid.NewGuid().ToString("D"),
+                PasswordHash = hasher.HashPassword(null!, "Password123")
+            },
+            new()
+            {
+                Id = student6Id,
+                FullName = "Sinh Viên FPT 6",
+                Email = "student6@hackathon.com",
+                NormalizedEmail = "STUDENT6@HACKATHON.COM",
+                UserName = "student6@hackathon.com",
+                NormalizedUserName = "STUDENT6@HACKATHON.COM",
+                EmailConfirmed = true,
+                Status = UserStatus.Approved,
+                CreatedAt = new DateTime(2025, 1, 1, 0, 0, 0, DateTimeKind.Utc),
+                UpdatedAt = new DateTime(2025, 1, 1, 0, 0, 0, DateTimeKind.Utc),
+                SecurityStamp = Guid.NewGuid().ToString("D"),
+                PasswordHash = hasher.HashPassword(null!, "Password123")
             }
         };
 
@@ -383,7 +447,11 @@ public class ApplicationDbContext : IdentityDbContext<ApplicationUser, Applicati
             new() { UserId = judgeGuestId, RoleId = Guid.Parse("00000000-0000-0000-0000-000000000003") },
             new() { UserId = mentorId, RoleId = Guid.Parse("00000000-0000-0000-0000-000000000004") },
             new() { UserId = studentFptId, RoleId = Guid.Parse("00000000-0000-0000-0000-000000000005") },
-            new() { UserId = studentExternalId, RoleId = Guid.Parse("00000000-0000-0000-0000-000000000006") }
+            new() { UserId = studentExternalId, RoleId = Guid.Parse("00000000-0000-0000-0000-000000000006") },
+            new() { UserId = student3Id, RoleId = Guid.Parse("00000000-0000-0000-0000-000000000005") },
+            new() { UserId = student4Id, RoleId = Guid.Parse("00000000-0000-0000-0000-000000000005") },
+            new() { UserId = student5Id, RoleId = Guid.Parse("00000000-0000-0000-0000-000000000005") },
+            new() { UserId = student6Id, RoleId = Guid.Parse("00000000-0000-0000-0000-000000000005") }
         };
         b.Entity<IdentityUserRole<Guid>>().HasData(userRoles);
 
@@ -405,6 +473,38 @@ public class ApplicationDbContext : IdentityDbContext<ApplicationUser, Applicati
                 StudentCode = "EXT16002",
                 IsFptStudent = false,
                 UniversityName = "VNU University",
+                CreatedAt = new DateTime(2025, 1, 1, 0, 0, 0, DateTimeKind.Utc)
+            },
+            new()
+            {
+                Id = Guid.Parse("77777777-7777-7777-7777-777777777778"),
+                UserId = student3Id,
+                StudentCode = "SE160003",
+                IsFptStudent = true,
+                CreatedAt = new DateTime(2025, 1, 1, 0, 0, 0, DateTimeKind.Utc)
+            },
+            new()
+            {
+                Id = Guid.Parse("88888888-8888-8888-8888-888888888889"),
+                UserId = student4Id,
+                StudentCode = "SE160004",
+                IsFptStudent = true,
+                CreatedAt = new DateTime(2025, 1, 1, 0, 0, 0, DateTimeKind.Utc)
+            },
+            new()
+            {
+                Id = Guid.Parse("99999999-9999-9999-9999-99999999999A"),
+                UserId = student5Id,
+                StudentCode = "SE160005",
+                IsFptStudent = true,
+                CreatedAt = new DateTime(2025, 1, 1, 0, 0, 0, DateTimeKind.Utc)
+            },
+            new()
+            {
+                Id = Guid.Parse("AAAAAAAA-AAAA-AAAA-AAAA-AAAAAAAAAAAB"),
+                UserId = student6Id,
+                StudentCode = "SE160006",
+                IsFptStudent = true,
                 CreatedAt = new DateTime(2025, 1, 1, 0, 0, 0, DateTimeKind.Utc)
             }
         };
